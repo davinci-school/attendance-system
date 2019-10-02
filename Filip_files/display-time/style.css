@@ -1,0 +1,30 @@
+body {
+  font-family: sans-serif;
+  padding: 2em;
+  background-color: whitesmoke;
+}
+
+h2 {
+  font-size: 1.5em;
+}
+ .spacetime {
+  background-color: #E55126;
+  padding: 1em 3em 2em 2em;
+ }
+
+.instuctions{
+  width: 100%;
+  padding: 20 20 20 20;
+  margin: 0.2em;
+  color: whitesmoke;
+}
+
+.time-button{
+  background-color: whitesmoke;
+  padding: 0.5em 1em;
+  width: 15em;
+}
+
+.time{
+  display: flex;
+}
