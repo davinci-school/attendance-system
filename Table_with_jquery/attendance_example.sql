@@ -11,6 +11,24 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
+
+-- Exportování struktury databáze pro
+CREATE DATABASE IF NOT EXISTS `attendance_system` /*!40100 DEFAULT CHARACTER SET latin2 COLLATE latin2_czech_cs */;
+USE `attendance_system`;
+
+-- Exportování struktury pro tabulka attendance_system.time_board
+CREATE TABLE IF NOT EXISTS `time_board` (
+  `ID_time_board` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `ID_users` int(11) DEFAULT NULL,
+  `arrived` time DEFAULT NULL,
+  `leave` time DEFAULT NULL,
+  `date` date DEFAULT NULL,
+  PRIMARY KEY (`ID_time_board`),
+  KEY `ID` (`ID_time_board`),
+  KEY `ID_user` (`ID_users`),
+  KEY `date` (`date`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin2 COLLATE=latin2_czech_cs;
+
 -- Exportování dat pro tabulku attendance_system.time_board: ~4 rows (přibližně)
 /*!40000 ALTER TABLE `time_board` DISABLE KEYS */;
 INSERT INTO `time_board` (`ID_time_board`, `ID_users`, `arrived`, `leave`, `date`) VALUES
@@ -20,7 +38,16 @@ INSERT INTO `time_board` (`ID_time_board`, `ID_users`, `arrived`, `leave`, `date
 	(4, 1, '12:34:06', '14:34:11', '2019-09-30');
 /*!40000 ALTER TABLE `time_board` ENABLE KEYS */;
 
--- Exportování dat pro tabulku attendance_system.users: ~2 rows (přibližně)
+-- Exportování struktury pro tabulka attendance_system.users
+CREATE TABLE IF NOT EXISTS `users` (
+  `ID_users` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `username` varchar(50) COLLATE latin2_czech_cs NOT NULL DEFAULT '0',
+  `password` varchar(50) COLLATE latin2_czech_cs DEFAULT NULL,
+  PRIMARY KEY (`ID_users`),
+  KEY `ID_user_name` (`ID_users`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin2 COLLATE=latin2_czech_cs;
+
+-- Exportování dat pro tabulku attendance_system.users: ~3 rows (přibližně)
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 INSERT INTO `users` (`ID_users`, `username`, `password`) VALUES
 	(1, 'jtrojanova', 'ahojjaksemas'),
