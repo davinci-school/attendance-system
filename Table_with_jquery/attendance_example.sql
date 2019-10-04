@@ -22,10 +22,10 @@ INSERT INTO `time_board` (`ID_time_board`, `ID_users`, `arrived`, `leave`, `date
 
 -- Exportování dat pro tabulku attendance_system.users: ~2 rows (přibližně)
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` (`ID_users`, `name`, `password`) VALUES
-	(1, 'Jana Trojanová', NULL),
-	(2, 'Ondřej Schicker', NULL),
-	(3, 'Filip Zajíc', NULL);
+INSERT INTO `users` (`ID_users`, `username`, `password`) VALUES
+	(1, 'jtrojanova', 'ahojjaksemas'),
+	(2, 'Ondřej Schicker', 'admin4321'),
+	(3, 'Filip Zajíc', 'admin1234');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
