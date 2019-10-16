@@ -3,7 +3,7 @@ var mysql = require('mysql');
 var connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'DaVinci@1',
+  password: 'admin1234',
   database: 'attendance_system',
 })
 
@@ -14,7 +14,7 @@ connection.connect(function(err){
   }
 });
 
-connection.query('SELECT * from admin_view', function(err, rows, fields){
+connection.query('SELECT * from users', function(err, rows, fields){
   if(!err)
     console.log(rows);
   else
