@@ -1,6 +1,7 @@
 const mysql = require("mysql");
-const LOCALHOST = false;
+const LOCALHOST = true;
 
+//defines connection to either remote or local database
 if(LOCALHOST) {
   var connection = mysql.createConnection({
     host: "localhost",
@@ -16,24 +17,42 @@ if(LOCALHOST) {
     database: 'attendance_system',
   })
 }
+//tries to connect to database
 connection.connect(function(err){
   if(err) throw err;
   else {
-    console.log("connected to database");
+    console.log("Connected to database");
   }
 });
-connection.query("SELECT * from users", function(err, rows, fields){
-  if(!err){
-    console.log(rows);
-  } else {
-    console.log(err);
-  }
+
+const express = require('express');
+const app = express();
+
+//sets root directory
+app.use(express.static("#33_web_page"))
+
+app.listen(3000, () => {
+  console.log("Server started at: https://localhost:3000/");
 })
 
+app.get('/users', (req, res) => {
+  connection.query("SELECT * from users", function(err, rows, fields){
+    if(!err){
+      console.log(rows);
+      res.send(rows);
+    } else {
+      console.log(err);
+      res.send(err);
+    }
+  })
+});
 /*
-querry = dotaz
-tenhle script se umi pripojit na databzi ktera je bud lokalni nenbo remote_host
-umi dat dotaz
+connection.query('SELECT * from time_board', function(err, rows, fields){
+  if(!err)
+    console.log(rows);
+  else
+    console.log(err);
+})
 
 */
 
@@ -42,6 +61,9 @@ umi dat dotaz
 
 
 
+/*
+//basicaly end the script / disconnects from Database
 connection.end(err => {
-  console.log("Disconnected from database, server ended.");
-});
+  console.log("Database disconnected.");
+})
+*/
