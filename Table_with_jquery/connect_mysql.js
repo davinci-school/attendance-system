@@ -1,11 +1,21 @@
 var mysql = require('mysql');
+var LOCALHOST = true;
 
-var connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: 'DaVinci@1',
-  database: 'attendance_system',
-})
+if (LOCALHOST) {
+  var connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: 'DaVinci@1',
+    database: 'attendance_system',
+  })
+} else {
+  var connection = mysql.createConnection({
+    host: '192.168.108.24',
+    user: 'remote_host',
+    password: 'admin1234',
+    database: 'attendance_system',
+  })
+}
 
 connection.connect(function(err){
   if(err) throw err;
@@ -14,11 +24,11 @@ connection.connect(function(err){
   }
 });
 
-connection.query('SELECT * from admin_view', function(err, rows, fields){
+connection.query('SELECT * from time_board', function(err, rows, fields){
   if(!err)
     console.log(rows);
   else
-    console.log('Error');
+    console.log(err);
 })
 
 connection.end();
