@@ -29,7 +29,7 @@ const express = require('express');
 const app = express();
 
 //sets root directory
-app.use(express.static("#33_web_page"))
+app.use(express.static("static_files"))
 
 app.listen(3000, () => {
   console.log("Server started at: https://localhost:3000/");
@@ -38,14 +38,17 @@ app.listen(3000, () => {
 app.get('/users', (req, res) => {
   connection.query("SELECT * from users", function(err, rows, fields){
     if(!err){
-      console.log(rows);
-      res.send(rows);
+      console.log(JSON.stringify(rows));
+      res.send(JSON.stringify(rows));
     } else {
       console.log(err);
       res.send(err);
     }
   })
 });
+
+
+
 /*
 connection.query('SELECT * from time_board', function(err, rows, fields){
   if(!err)
