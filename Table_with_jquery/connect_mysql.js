@@ -1,6 +1,7 @@
 var mysql = require('mysql');
 var LOCALHOST = true;
 
+
 if (LOCALHOST) {
   var connection = mysql.createConnection({
     host: 'localhost',
