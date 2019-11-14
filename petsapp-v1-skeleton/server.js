@@ -1,7 +1,20 @@
 // Node.js + Express backend ...
-const express = require("express");
-const app = express();
 
+
+const express = require("express");
+const session = require("express-session")
+const app = express();
+app.use(session({
+  name: "sid",
+  resave: false,
+  saveUninitialized: false,
+  secret: "admin1234",
+  cookie: {
+    maxAge: 750000000,
+    sameSite: true,
+    secure: false,
+  }
+}));
 app.use(express.static("static_files"));
 /*
 (const fakeDatabase = {
@@ -45,6 +58,26 @@ connection.query('SELECT * from time_board', function(err, rows, fields){
 
 connection.end();
 
+app.get('/', (req, res) => {
+  res.send(`
+    <h1>Hello world</h1>
+    <a href='/login'>login</a>
+    <a href='/home'>home </a>
+  `)
+})
+app.get('/home', (req, res) => {
+    res.sendFile("static_files/petsapp.html")
+})
+
+
+app.get("/login", (req, res) => {
+  res.send(`
+    <h1>Login page</h1>
+    <form method="post" action="/login">
+      <input type="email" name="email" placeholder="Email" require />
+    </form>
+  `)
+} )
 
 app.get('/users', (req, res) => {
   const allUsernames = Object.keys(Database);
