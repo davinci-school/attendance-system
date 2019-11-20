@@ -15,6 +15,7 @@ app.use(session({
     secure: false,
   }
 }));
+app.use(express.urlencoded({extended: true}))
 app.use(express.static("static_files"));
 /*
 (const fakeDatabase = {
@@ -58,6 +59,21 @@ connection.query('SELECT * from time_board', function(err, rows, fields){
 
 connection.end();
 
+const redirectLogin = (req, res, next) =>{
+  if (!req.session.userid) {
+    res.redirect("/Login")
+  }
+  else {next()}
+}
+
+const redirectHome = (req, res, next) =>{
+  if (req.session.userid) {
+    res.redirect("/home")
+  }
+  else {next()}
+}
+
+
 app.get('/', (req, res) => {
   res.send(`
     <h1>Hello world</h1>
@@ -65,19 +81,29 @@ app.get('/', (req, res) => {
     <a href='/home'>home </a>
   `)
 })
-app.get('/home', (req, res) => {
-    res.sendFile("static_files/petsapp.html")
+app.get('/home', redirectLogin, (req, res) => {
+    res.sendFile("static_files/petsapp.html", {root: "."})
 })
 
 
-app.get("/login", (req, res) => {
+app.route("/Login")
+  .get(redirectHome, (req, res) => {
+console.log(req.session)
   res.send(`
     <h1>Login page</h1>
     <form method="post" action="/login">
       <input type="email" name="email" placeholder="Email" require />
+      <input type="password" name="password" placeholder="Password" require />
+      <input type="submit"/>
     </form>
-  `)
-} )
+    `)
+    })
+
+   .post(redirectHome, (req, res) =>{
+     const {email, password} = req.body
+     console.log(email, password)
+   })
+
 
 app.get('/users', (req, res) => {
   const allUsernames = Object.keys(Database);
