@@ -17,13 +17,7 @@ app.use(session({
 }));
 app.use(express.urlencoded({extended: true}))
 app.use(express.static("static_files"));
-/*
-(const fakeDatabase = {
-  'Ondra': {job: 'student', pet: 'cat.jpg'},
-  'Jana': {job: 'teacher',   pet: 'dog.jpg'}, //Původní fakeDatabase
-  'Filip': {job: 'student',  pet: 'bear.jpg'}
-};)
-*/
+  
 const mysql = require('mysql');
 const LOCALHOST = true;
 
