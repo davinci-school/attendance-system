@@ -37,6 +37,28 @@ if (LOCALHOST) {
   })
 }
 
+function get_timeboard(ID_users){
+
+  console.log("inside function");
+  connection.query('SELECT * FROM time_board WHERE ID_users = ?', [ID_users], function(error, results, fields) {
+    console.log("inside query");
+
+    if (!error) {
+      console.log("past error;");
+
+      if (results.length > 0) {
+        var rows = (JSON.parse(JSON.stringify(results[0])))
+        return(rows)
+      } else {
+        return("{}");
+      }
+
+    } else {
+      console.log(error);
+    }
+  })
+
+}
 connection.connect(function(err){
   if(err) throw err;
   else {
@@ -121,28 +143,29 @@ app.get('/users', (req, res) => {
   res.send(allUsernames);
 });
 
-app.get('/users/:userid', redirectLogin, (req, res) => {
-  const nameToLookup = req.params.userid; // matches ':userid' above
+app.get('/users/:username', redirectLogin, (req, res) => {
+  const nameToLookup = req.params.username; // matches ':userid' above
   console.log(nameToLookup);
-  if (req.session.userid == nameToLookup){
-  connection.query('SELECT * FROM users WHERE ID_users = ?', [nameToLookup], function(error, results, fields) {
+  connection.query('SELECT * FROM users WHERE username = ?', [nameToLookup], function(error, results, fields) {
     if (!error) {
+      if (results.length > 0) {
+        var rows = (JSON.parse(JSON.stringify(results[0])))
+        if (req.session.userid == rows.ID_users){
+          var time_board = get_timeboard()
+          console.log(time_board);
+          res.send(time_board);
+        } else {
+          res.send('unathorizes access');
+        }
+      } else {
+        res.send('No such a user');
+      }
+      res.end();
 
-     if (results.length > 0) {
-       var rows = (JSON.parse(JSON.stringify(results[0])))
-       res.send(rows.username);
-     } else {
-       res.send('Incorrect Username and/or Password!');
-     }
-     res.end();
-   } else {
-     console.log(error);
-   }
- })
-} else {
-  res.send("unauthorised acces")
-
-}
+    } else {
+      console.log(error);
+    }
+  })
 });
 
 
