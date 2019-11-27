@@ -1,15 +1,23 @@
 // Node.js + Express backend ...
-const express = require("express");
-const app = express();
 
+
+const express = require("express");
+const session = require("express-session")
+const app = express();
+app.use(session({
+  name: "sid",
+  resave: false,
+  saveUninitialized: false,
+  secret: "admin1234",
+  cookie: { //create a cookie
+    maxAge: 750000000, //set cookie lifetime to 208.3 hours
+    sameSite: true,
+    secure: false,
+  }
+}));
+app.use(express.urlencoded({extended: true}))
 app.use(express.static("static_files"));
-/*
-(const fakeDatabase = {
-  'Ondra': {job: 'student', pet: 'cat.jpg'},
-  'Jana': {job: 'teacher',   pet: 'dog.jpg'}, //Původní fakeDatabase
-  'Filip': {job: 'student',  pet: 'bear.jpg'}
-};)
-*/
+
 const mysql = require('mysql');
 const LOCALHOST = true;
 
@@ -43,7 +51,68 @@ connection.query('SELECT * from time_board', function(err, rows, fields){
     console.log(err);
 })
 
-connection.end();
+//connection.end();
+
+const redirectLogin = (req, res, next) =>{
+  if (!req.session.userid) {
+    res.redirect("/Login")
+  }
+  else {next()}
+}
+
+const redirectHome = (req, res, next) =>{
+  if (req.session.userid) {
+    res.redirect("/home")
+  }
+  else {next()}
+}
+
+
+app.get('/', (req, res) => {
+  res.send(`
+    <h1>Hello world</h1>
+    <a href='/login'>login</a>
+    <a href='/home'>home </a>
+  `)
+})
+app.get('/home', redirectLogin, (req, res) => {
+    res.sendFile("static_files/petsapp.html", {root: "."})
+})
+
+
+app.route("/Login")
+  .get(redirectHome, (req, res) => {
+console.log(req.session)
+  res.send(`
+    <h1>Login page</h1>
+    <form method="post" action="/login">
+      <input type="email" name="email" placeholder="Email" require />
+      <input type="password" name="password" placeholder="Password" require />
+      <input type="submit"/>
+    </form>
+    `)
+    })
+
+   .post(redirectHome, (req, res) =>{
+     const {email, password} = req.body
+     console.log(email, password)
+     connection.query('SELECT * FROM users WHERE Email = ? AND password = ?', [email, password], function(error, results, fields) {
+       if (!error) {
+
+        if (results.length > 0) {
+          var rows = (JSON.parse(JSON.stringify(results[0])))
+          req.session.userid = rows.ID_users;
+  				res.redirect('/home');
+  			} else {
+  				res.send('Incorrect Username and/or Password!');
+  			}
+  			res.end();
+      } else {
+        console.log(error);
+      }
+    })
+
+   })
 
 
 app.get('/users', (req, res) => {
@@ -52,15 +121,28 @@ app.get('/users', (req, res) => {
   res.send(allUsernames);
 });
 
-app.get('/users/:userid', (req, res) => {
+app.get('/users/:userid', redirectLogin, (req, res) => {
   const nameToLookup = req.params.userid; // matches ':userid' above
-  const val = fakeDatabase[nameToLookup];
-  console.log(nameToLookup, '->', val); // for debugging
-  if (val) {
-    res.send(val);
-  } else {
-    res.send({}); // failed, so return an empty object instead of undefined
-  }
+  console.log(nameToLookup);
+  if (req.session.userid == nameToLookup){
+  connection.query('SELECT * FROM users WHERE ID_users = ?', [nameToLookup], function(error, results, fields) {
+    if (!error) {
+
+     if (results.length > 0) {
+       var rows = (JSON.parse(JSON.stringify(results[0])))
+       res.send(rows.username);
+     } else {
+       res.send('Incorrect Username and/or Password!');
+     }
+     res.end();
+   } else {
+     console.log(error);
+   }
+ })
+} else {
+  res.send("unauthorised acces")
+
+}
 });
 
 
