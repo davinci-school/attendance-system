@@ -9,15 +9,15 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   secret: "admin1234",
-  cookie: {
-    maxAge: 750000000,
+  cookie: { //create a cookie
+    maxAge: 750000000, //set cookie lifetime to 208.3 hours
     sameSite: true,
     secure: false,
   }
 }));
 app.use(express.urlencoded({extended: true}))
 app.use(express.static("static_files"));
-  
+
 const mysql = require('mysql');
 const LOCALHOST = true;
 
@@ -51,7 +51,7 @@ connection.query('SELECT * from time_board', function(err, rows, fields){
     console.log(err);
 })
 
-connection.end();
+//connection.end();
 
 const redirectLogin = (req, res, next) =>{
   if (!req.session.userid) {
@@ -96,6 +96,22 @@ console.log(req.session)
    .post(redirectHome, (req, res) =>{
      const {email, password} = req.body
      console.log(email, password)
+     connection.query('SELECT * FROM users WHERE Email = ? AND password = ?', [email, password], function(error, results, fields) {
+       if (!error) {
+
+        if (results.length > 0) {
+          var rows = (JSON.parse(JSON.stringify(results[0])))
+          req.session.userid = rows.ID_users;
+  				res.redirect('/home');
+  			} else {
+  				res.send('Incorrect Username and/or Password!');
+  			}
+  			res.end();
+      } else {
+        console.log(error);
+      }
+    })
+
    })
 
 
@@ -105,15 +121,28 @@ app.get('/users', (req, res) => {
   res.send(allUsernames);
 });
 
-app.get('/users/:userid', (req, res) => {
+app.get('/users/:userid', redirectLogin, (req, res) => {
   const nameToLookup = req.params.userid; // matches ':userid' above
-  const val = fakeDatabase[nameToLookup];
-  console.log(nameToLookup, '->', val); // for debugging
-  if (val) {
-    res.send(val);
-  } else {
-    res.send({}); // failed, so return an empty object instead of undefined
-  }
+  console.log(nameToLookup);
+  if (req.session.userid == nameToLookup){
+  connection.query('SELECT * FROM users WHERE ID_users = ?', [nameToLookup], function(error, results, fields) {
+    if (!error) {
+
+     if (results.length > 0) {
+       var rows = (JSON.parse(JSON.stringify(results[0])))
+       res.send(rows.username);
+     } else {
+       res.send('Incorrect Username and/or Password!');
+     }
+     res.end();
+   } else {
+     console.log(error);
+   }
+ })
+} else {
+  res.send("unauthorised acces")
+
+}
 });
 
 
