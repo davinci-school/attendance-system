@@ -1,4 +1,6 @@
-// Node.js + Express backend ...
+
+
+  // Node.js + Express backend ...
 
 
 const express = require("express");
@@ -40,7 +42,7 @@ if (LOCALHOST) {
 function get_timeboard(ID_users){
 
   console.log("inside function");
-  connection.query('SELECT * FROM time_board WHERE ID_users = ?', [ID_users], function(error, results, fields) {
+    connection.query('SELECT * FROM time_board WHERE ID_users = ?', [ID_users], function(error, results, fields) {
     console.log("inside query");
 
     if (!error) {
