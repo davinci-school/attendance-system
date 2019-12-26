@@ -1,0 +1,15 @@
+body {
+    font-family: "Roboto", sans-serif;
+}
+
+.logBoxWrap {
+    border: 1px solid;
+    display: block;
+    width: 300px;
+    padding: 10px;
+    margin-bottom: 1em;
+}
+
+.dayHeadline {
+    font-weight: bold;
+}
