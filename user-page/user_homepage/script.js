@@ -1,11 +1,5 @@
-//fake data used throughout the script for testing
-//those will be later replaced by real data from database via API
-var data = [{
-    "date": "2019-12-13",
-    "time_in": "15-01-00",
-    "time_out": "16-20-00"
-}];
-
+//rows 4-103 are time functions
+//rows 103 - 
 
 //get name of day based on date
 function getDayName(data) {
@@ -46,13 +40,7 @@ function getMonthNumber(data) {
 //get month name based on date
 function getMonthName(data) {
     var monthList = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    var month = ""; //set month as empty string
-
-    // go through data and extract numbers that corespond with month
-    //data dor month are on 5th and 6th place, therefore i starts at 5 and ends with 6
-    for (let i = 5; i < 7; i++) {
-        month = month + data.date[i];
-    };
+    var month = getMonthNumber(data); //get number of month from data
     month = month - 1; //substract one because first index of list is 0 not 1
     month = monthList[month]; //find name of month that equals to the number
     return month;
@@ -110,8 +98,6 @@ function durationOfStay(data) {
     minutesStayed = minutesStayed - hoursStayed * 60;
     var duration = hoursStayed + ":" + minutesStayed;
     return duration;
-
-
 };
 
 //add History Log
@@ -146,30 +132,37 @@ function appendHistoryLog(data, divId) {
     };
 };
 
+async function getHistoryLogs() {
+    const endpoint = "historyLogsData.json";
+    const key = "historyLogsData"
 
-//get data from historyLogsData.json file
-$.ajax({
-    url: "historyLogsData.json",
-    success: function(data) {
+    return $.ajax({
+        url: endpoint,
+        success: function(data) {
 
-        // get string from json
-        // var fetchedData = JSON.stringify(data);
-
-        console.log(data);
-
-        //is this really a good idea? how else can i store it?
-        localStorage.setItem("dataFromJson", data);
-    }
-});
-
-
+            //is this really a good idea? how else can i store it?
+            // data = JSON.parse(JSON.stringify(data))
+            sessionStorage.setItem("dataFromJson", data);
+            return data
+        }
+    });
+};
 
 
 
-// console.log(localStorage.getItem("dataFromJson"));
-//data = localStorage.getItem("dataFromJson");
+getHistoryLogs().then(function(gottenData) {
+        console.log(gottenData);
+        data = gottenData;
+    })
+    //after get request is succes, append data to page
+    .then(function() {
+        for (let index = 0; index < 10; index++) {
+            appendHistoryLog(data[index], "session" + index);
+        }
+    })
+    .then(function() {
+        let storedData = sessionStorage.getItem("dataFromJson");
+        storedData = JSON.parse(JSON.stringify(storedData));
+        console.log(storedData);
 
-// add data to page
-appendHistoryLog(data[0], "session1");
-appendHistoryLog(data[0], "session2");
-appendHistoryLog(data[0], "session3");
+    })
