@@ -1,10 +1,10 @@
 //fake data used throughout the script for testing
 //those will be later replaced by real data from database via API
-var data = {
+var data = [{
     "date": "2019-12-13",
     "time_in": "15-01-00",
     "time_out": "16-20-00"
-};
+}];
 
 
 //get name of day based on date
@@ -15,6 +15,7 @@ function getDayName(data) {
     return dayName;
 };
 
+//get JS standard time format value
 function getJsTimeFormat(data) {
     var monthName = getMonthName(data);
     var day = getDayNumber(data);
@@ -23,6 +24,7 @@ function getJsTimeFormat(data) {
     return x;
 };
 
+//get year number based on date
 function getYearNumber(data) {
     var year = "";
     for (let i = 0; i < 4; i++) {
@@ -31,6 +33,7 @@ function getYearNumber(data) {
     return year;
 };
 
+//get month number based on date
 function getMonthNumber(data) {
     var month = "";
     for (let i = 5; i < 7; i++) {
@@ -40,6 +43,7 @@ function getMonthNumber(data) {
 
 };
 
+//get month name based on date
 function getMonthName(data) {
     var monthList = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     var month = ""; //set month as empty string
@@ -111,7 +115,7 @@ function durationOfStay(data) {
 };
 
 //add History Log
-function addHistoryLog(data, divId) {
+function appendHistoryLog(data, divId) {
     var newDiv = document.createElement("div");
     newDiv.id = divId;
     newDiv.className = "logBoxWrap";
@@ -143,15 +147,29 @@ function addHistoryLog(data, divId) {
 };
 
 
+//get data from historyLogsData.json file
+$.ajax({
+    url: "historyLogsData.json",
+    success: function(data) {
 
-addHistoryLog(data, "session1");
+        // get string from json
+        // var fetchedData = JSON.stringify(data);
 
-addHistoryLog(data, "session2");
+        console.log(data);
 
-durationOfStay(data);
+        //is this really a good idea? how else can i store it?
+        localStorage.setItem("dataFromJson", data);
+    }
+});
 
 
-// for (let i = 0; i < 5; i++) {
-//     addHistoryLog(data, "session " + i);
 
-// }
+
+
+// console.log(localStorage.getItem("dataFromJson"));
+//data = localStorage.getItem("dataFromJson");
+
+// add data to page
+appendHistoryLog(data[0], "session1");
+appendHistoryLog(data[0], "session2");
+appendHistoryLog(data[0], "session3");
