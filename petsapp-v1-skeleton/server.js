@@ -68,35 +68,12 @@ if (LOCALHOST) {
 
 connection = new Database(config)
 
-function get_timeboard(ID_users){
-
-  console.log("inside function");
-    connection.query('SELECT * FROM time_board WHERE ID_users = ?', [ID_users], function(error, results, fields) {
-    console.log("inside query");
-
-    if (!error) {
-      console.log("past error;");
-
-      if (results.length > 0) {
-        var rows = (JSON.parse(JSON.stringify(results[0])))
-        return(rows)
-      } else {
-        return("{}");
-      }
-
-    } else {
-      console.log(error);
-    }
-  })
-
-}
-
+// test connection and see all data in time_board
 connection.query('SELECT * from time_board')
   .then(rows => console.log(rows))
   .catch(err => console.log(err))
 
-//connection.end();
-
+// Redirect function
 const redirectLogin = (req, res, next) =>{
   if (!req.session.userid) {
     res.redirect("/Login")
@@ -125,6 +102,23 @@ const checkUserExist = (results, req, res) => {
     }
 
 }
+
+const checkUserAuthorization = (results, req, res) => {
+  if (results.length > 0) {
+      var rows = convertSQL(results)
+      if (req.session.userid == rows.ID_users){
+          console.log('user_ID',rows.ID_users);
+          res.send(rows.ID_users.toString());
+          return Promise.resolve(rows.ID_users.toString())
+      } else {
+          res.send('unathorizes access');
+          return Promise.reject('promise rejeted unathorizes access');
+      }
+  } else {
+    res.send('No such a user');
+  }
+}
+
 
 app.get('/', (req, res) => {
   res.send(`
@@ -171,8 +165,8 @@ app.get('/users/:username', redirectLogin, (req, res) => {
   console.log(nameToLookup);
   //res.send(nameToLookup);
   connection.query('SELECT * FROM users WHERE username = ?', [nameToLookup])
-  .then(results => {
-        if (results.length > 0) {
+  .then(results => checkUserAuthorization(results, req, res))
+/*        if (results.length > 0) {
             var rows = convertSQL(results)
             if (req.session.userid == rows.ID_users){
                 console.log('user_ID',rows.ID_users);
@@ -186,8 +180,9 @@ app.get('/users/:username', redirectLogin, (req, res) => {
           res.send('No such a user');
         }
         //res.end(); // empty string filled
-    })
-    .then(userID => console.log('proceed with query'))
+
+    }) */
+    .then(userID => console.log('proceed with query',userID))
     .catch(error => console.log(error))
 /*    if (!error) {
       if (results.length > 0) {
