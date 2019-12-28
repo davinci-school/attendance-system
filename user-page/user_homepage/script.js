@@ -1,10 +1,7 @@
-//rows 4-103 are time functions
-//rows 103 - 
-
 //get name of day based on date
 function getDayName(data) {
     dayOrder = getJsTimeFormat(data).getDay();
-    dayList = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday,", "Friday", "Saturday"];
+    dayList = ["neděle", "pondělí", "úterý", "středa", "čtvrtek,", "pátek", "sobota"];
     dayName = dayList[dayOrder];
     return dayName;
 };
@@ -17,6 +14,7 @@ function getJsTimeFormat(data) {
     var x = new Date(monthName + " " + day + ", " + year);
     return x;
 };
+
 
 //get year number based on date
 function getYearNumber(data) {
@@ -92,8 +90,8 @@ function getMinuteOutNumber(data) {
 };
 
 function durationOfStay(data) {
-    //                                                  minutes *1 to make sure its integer and not string
-    var minutesStayed = ((getHourOutNumber(data) * 60) + getMinuteOutNumber(data) * 1) - ((getHourInNumber(data) * 60) + getMinuteInNumber(data) * 1);
+    //                                                  Number() to convert str to int
+    var minutesStayed = ((getHourOutNumber(data) * 60) + Number(getMinuteOutNumber(data))) - ((getHourInNumber(data) * 60) + Number(getMinuteInNumber(data)));
     var hoursStayed = Math.floor(minutesStayed / 60);
     minutesStayed = minutesStayed - hoursStayed * 60;
     var duration = hoursStayed + ":" + minutesStayed;
@@ -109,21 +107,24 @@ function appendHistoryLog(data, divId) {
 
     // get individual informations from input data and combine them with wording
     var sessionDate = getDayName(data) + " " + getDayNumber(data) + ". " + getMonthNumber(data) + ". " + getYearNumber(data);
-    var arrival = "Arrived at " + getHourInNumber(data) + ":" + getMinuteInNumber(data);
-    var departure = "Departured at " + getHourOutNumber(data) + ":" + getMinuteOutNumber(data);
-    var duration = "Stayed for " + durationOfStay(data);
+    var arrival = "přišel jsi " + getHourInNumber(data) + ":" + getMinuteInNumber(data);
+    var departure = "odešel jsi " + getHourOutNumber(data) + ":" + getMinuteOutNumber(data);
+    var duration = "doba " + durationOfStay(data) + " hodin";
 
     //create list of future rows for easier access
     var historyLogList = [sessionDate, arrival, departure, duration];
 
+
+    // loop through individual informations, append them in different rows
     for (let index = 0; index < historyLogList.length; index++) {
         let text = historyLogList[index];
 
         let node = document.createElement("P");
+        node.className = "logBoxP"
 
         //to add only class to first <p> - to make it bolder
         if (index === 0) {
-            node.className = "sessionName";
+            node.className = "sessionDate logBoxP";
         };
 
         var textNode = document.createTextNode(text);
@@ -132,37 +133,38 @@ function appendHistoryLog(data, divId) {
     };
 };
 
+// 
 async function getHistoryLogs() {
     const endpoint = "historyLogsData.json";
-    const key = "historyLogsData"
 
-    return $.ajax({
-        url: endpoint,
-        success: function(data) {
+    // if there are no data at sessionStorage, use get request, 
+    // else use those stored data, to avoid unnecceseary load on server and processing time
+    if (sessionStorage.getItem("dataFromJson") == null) {
+        return $.ajax({
+            url: endpoint,
+            type: "GET",
+            success: function(data) {
 
-            //is this really a good idea? how else can i store it?
-            // data = JSON.parse(JSON.stringify(data))
-            sessionStorage.setItem("dataFromJson", data);
-            return data
-        }
-    });
+                //store data to sessionStorage for later use
+                sessionStorage.setItem("dataFromJson", JSON.stringify(data));
+                console.log("Using GET request, no local data found.");
+            }
+        });
+    } else {
+        let data = JSON.parse(sessionStorage.getItem("dataFromJson"));
+        console.log("Using sessionStorage, no need for GET request.");
+
+        return data;
+    };
+
 };
 
 
-
-getHistoryLogs().then(function(gottenData) {
-        console.log(gottenData);
-        data = gottenData;
-    })
-    //after get request is succes, append data to page
-    .then(function() {
+//actual code, that runs
+//get data from file and save them to sessionStorage, then log it to console, then append data to HTML
+getHistoryLogs()
+    .then(function(data) {
         for (let index = 0; index < 10; index++) {
             appendHistoryLog(data[index], "session" + index);
         }
-    })
-    .then(function() {
-        let storedData = sessionStorage.getItem("dataFromJson");
-        storedData = JSON.parse(JSON.stringify(storedData));
-        console.log(storedData);
-
-    })
+    });
