@@ -133,8 +133,11 @@ function appendHistoryLog(data, divId) {
     };
 };
 
-// 
+// function, that gets history logs from database or local storage (if possible)
+//returns unformated data
 async function getHistoryLogs() {
+
+    //this will change in future to /user_data_past_month
     const endpoint = "historyLogsData.json";
 
     // if there are no data at sessionStorage, use get request, 
@@ -148,7 +151,11 @@ async function getHistoryLogs() {
                 //store data to sessionStorage for later use
                 sessionStorage.setItem("dataFromJson", JSON.stringify(data));
                 console.log("Using GET request, no local data found.");
+            },
+            error: function(error) {
+                throw error;
             }
+
         });
     } else {
         let data = JSON.parse(sessionStorage.getItem("dataFromJson"));
@@ -157,6 +164,39 @@ async function getHistoryLogs() {
         return data;
     };
 
+};
+
+// function that posts attendance to database, check-in to be specific
+// this may change in the future as I dont have functional back-end avaliable
+async function checkIn() {
+    const ednpoint = "/user_check_in"
+
+    $.ajax({
+        url: endpoint,
+        type: "POST",
+        success: function() {
+            console.log("Check-in was succesfull.");
+        },
+        error: function(error) {
+            console.log(error);
+
+        }
+    });
+};
+
+// function that posts attendance to database, check-out to be specific
+// this may change in the future as I dont have functional back-end avaliable
+async function checkOut() {
+    const endpoint = "/user_check_out"
+
+    $.ajax({
+        url: endpoint,
+        type: "POST",
+        succes: function() {
+            console.log("Check-out was succesfull.")
+        }
+
+    });
 };
 
 
