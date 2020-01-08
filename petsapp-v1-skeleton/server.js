@@ -21,7 +21,7 @@ app.use(express.urlencoded({extended: true}))
 app.use(express.static("static_files"));
 
 const mysql = require('mysql');
-const LOCALHOST = true;
+const LOCALHOST = false;
 
 class Database {
     constructor( config ) {
@@ -65,7 +65,6 @@ if (LOCALHOST) {
     database: 'attendance_system',
   }
 }
-
 connection = new Database(config)
 
 // test connection and see all data in time_board
@@ -190,6 +189,6 @@ app.get('/users/:username', redirectLogin, (req, res) => {
 });
 
 
-app.listen(3000, function(){
-  console.log("Connected to server")
+app.listen(4000, function(){
+  console.log("Connected to server, port 4000")
 });
