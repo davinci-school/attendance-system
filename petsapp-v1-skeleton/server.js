@@ -19,7 +19,7 @@ app.use(express.urlencoded({extended: true}))
 app.use(express.static("static_files"));
 
 const mysql = require('mysql');
-const LOCALHOST = true;
+const LOCALHOST = false;
 
 if (LOCALHOST) {
   var connection = mysql.createConnection({
@@ -44,12 +44,12 @@ connection.connect(function(err){
   }
 });
 
-connection.query('SELECT * from time_board', function(err, rows, fields){
-  if(!err)
-    console.log(rows);
-  else
-    console.log(err);
-})
+// connection.query('SELECT * from time_board', function(err, rows, fields){
+//   if(!err)
+//     console.log(rows);
+//   else
+//     console.log(err);
+// })
 
 //connection.end();
 
@@ -121,31 +121,17 @@ app.get('/users', (req, res) => {
   res.send(allUsernames);
 });
 
-app.get('/users/:userid', redirectLogin, (req, res) => {
-  const nameToLookup = req.params.userid; // matches ':userid' above
+app.get('/users/:username', redirectLogin, (req, res) => {
+  const nameToLookup = req.params.username; // matches ':userid' above
   console.log(nameToLookup);
-  if (req.session.userid == nameToLookup){
-  connection.query('SELECT * FROM users WHERE ID_users = ?', [nameToLookup], function(error, results, fields) {
-    if (!error) {
-
-     if (results.length > 0) {
-       var rows = (JSON.parse(JSON.stringify(results[0])))
-       res.send(rows.username);
-     } else {
-       res.send('Incorrect Username and/or Password!');
-     }
-     res.end();
-   } else {
-     console.log(error);
-   }
- })
-} else {
-  res.send("unauthorised acces")
-
-}
+  connection.query('SELECT * FROM users WHERE username = ?', [nameToLookup], function(error, results, fields) {
+    res.send([{ 'arrived': '12', 'leave': '15', 'data':'20.12'},
+              { 'arrived': '12', 'leave': '15', 'data':'20.12'},
+              { 'arrived': '12', 'leave': '15', 'data':'20.12'}])
+  })
 });
 
 
-app.listen(3000, function(){
-  console.log("Connected to server")
+app.listen(4000, function(){
+  console.log("Connected to server, port 4000")
 });
