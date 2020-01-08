@@ -166,22 +166,6 @@ app.get('/users/:username', redirectLogin, (req, res) => {
   //res.send(nameToLookup);
   connection.query('SELECT * FROM users WHERE username = ?', [nameToLookup])
   .then(results => checkUserAuthorization(results, req, res))
-/*        if (results.length > 0) {
-            var rows = convertSQL(results)
-            if (req.session.userid == rows.ID_users){
-                console.log('user_ID',rows.ID_users);
-                res.send(rows.ID_users.toString());
-                Promise.resolve(rows.ID_users.toString())
-            } else {
-                res.send('unathorizes access');
-                return Promise.reject('promise rejeted unathorizes access');
-            }
-        } else {
-          res.send('No such a user');
-        }
-        //res.end(); // empty string filled
-
-    }) */
     .then(userID => console.log('proceed with query',userID))
     .catch(error => console.log(error))
 /*    if (!error) {
