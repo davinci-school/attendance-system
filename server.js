@@ -161,15 +161,15 @@ app.get('/users', (req, res) => {
 
 app.get('/user_data_past_month', redirectLogin, (req, res) => {
 
-  //res.send(nameToLookup);
+
   connection.query('SELECT * FROM time_board WHERE ID_users = 2 AND date BETWEEN SUBDATE(CURDATE(), INTERVAL 1 MONTH) AND NOW();', [req.session.userid])
-  //.then(results => res.send(results))
+  
     then(results => console.log(results))
     .catch(error => console.log(error))
 
 });
 
 
-app.listen(4000, function(){
-  console.log("Connected to server, port 4000")
+app.listen(3000, function(){
+  console.log("Connected to server, port 3000")
 });
