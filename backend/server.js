@@ -165,7 +165,7 @@ app.get('/user_data_past_month', redirectLogin, (req, res) => {
 
   connection.query('SELECT * FROM time_board WHERE ID_users = 2 AND date BETWEEN SUBDATE(CURDATE(), INTERVAL 1 MONTH) AND NOW();', [req.session.userid])
 
-    then(results => console.log(results))
+    .then(results => res.send(results))
     .catch(error => console.log(error))
 
 });
