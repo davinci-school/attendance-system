@@ -52,7 +52,7 @@ class Database {
 
 
 if (LOCALHOST) {
-  //var conn  ection = mysql.createConnection(
+  //var connection = mysql.createConnection(
   config = {
     host: 'localhost',
     user: 'root',
@@ -165,11 +165,12 @@ app.get('/users', (req, res) => {
 app.get('/user_data_past_month', redirectLogin, (req, res) => {
 
 
-  connection.query('SELECT * FROM time_board WHERE ID_users = ? AND date BETWEEN SUBDATE(CURDATE(), INTERVAL 1 MONTH) AND NOW();', [req.session.userid])
-
-    .then(results=JSON.parse(results);)
-    .then(console.log(results));
-    .then(results => res.send(results.name, results.time_in, results.time_out))
+  //connection.query('SELECT * FROM time_board WHERE ID_users = ? AND date BETWEEN SUBDATE(CURDATE(), INTERVAL 1 MONTH) AND NOW();', [req.session.userid])
+  connection.query("SELECT u.username, t.time_in, t.time_out FROM users u JOIN time_board t ON u.ID_users = t.ID_users WHERE t.ID_users=1  AND time_in BETWEEN SUBDATE(CURDATE(), INTERVAL 1 MONTH) AND NOW()", [req.session.userid])
+    .then(results => {
+      res.send(results)
+      res.send(results.name, results.time_in, results.time_out)
+    })
     .catch(error => console.log(error))
 
 });
