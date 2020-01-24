@@ -7,6 +7,8 @@ const express = require("express");
 const session = require("express-session")
 const app = express();
 const path = require('path');
+const https = require('https');
+
 app.use(session({
   name: "sid",
   resave: false,
@@ -50,7 +52,7 @@ class Database {
 
 
 if (LOCALHOST) {
-  //var connection = mysql.createConnection(
+  //var conn  ection = mysql.createConnection(
   config = {
     host: 'localhost',
     user: 'root',
@@ -163,9 +165,11 @@ app.get('/users', (req, res) => {
 app.get('/user_data_past_month', redirectLogin, (req, res) => {
 
 
-  connection.query('SELECT * FROM time_board WHERE ID_users = 2 AND date BETWEEN SUBDATE(CURDATE(), INTERVAL 1 MONTH) AND NOW();', [req.session.userid])
+  connection.query('SELECT * FROM time_board WHERE ID_users = ? AND date BETWEEN SUBDATE(CURDATE(), INTERVAL 1 MONTH) AND NOW();', [req.session.userid])
 
-    .then(results => res.send(results))
+    .then(results=JSON.parse(results);)
+    .then(console.log(results));
+    .then(results => res.send(results.name, results.time_in, results.time_out))
     .catch(error => console.log(error))
 
 });
