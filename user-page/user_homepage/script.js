@@ -54,7 +54,7 @@ function appendHistoryLog(data, divId) {
 async function getHistoryLogs() {
 
     //this will change in future to /user_data_past_month
-    const endpoint = "historyLogsData.json";
+    const endpoint = "/user_data_past_month";
 
     // if there are no data at sessionStorage, use get request, 
     // else use those stored data, to avoid unnecceseary load on server and processing time
@@ -118,7 +118,7 @@ async function checkOut() {
 
 getHistoryLogs()
     .then(function(data) {
-        for (let index = 0; index < 3; index++) {
+        for (let index = 0; index < 10; index++) {
             appendHistoryLog(data[index], "session" + index);
         }
     });
