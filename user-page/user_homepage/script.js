@@ -18,20 +18,18 @@ function appendHistoryLog(data, divId) {
     time_out = new Date(data.time_out);
 
     // get individual informations from input data and combine them with wording
-
     var sessionDate = getDayName(time_in) + ", " + time_in.getDate() + ". " + (time_in.getMonth() + 1) + ". " + time_in.getFullYear();
     var arrival = "přišel jsi v " + time_in.getHours() + ":" + time_in.getMinutes();
     var departure = "odešel jsi v " + time_out.getHours() + ":" + time_out.getMinutes();
 
+    // get duration of stay, then format it
     let duration = time_out - time_in;
     duration = new Date(duration);
     duration = "doba " + duration.getHours() + ":" + duration.getMinutes() + " hodin";
 
 
     //create list of future rows for easier access
-
     var historyLogList = [sessionDate, arrival, departure, duration];
-
 
     // loop through individual informations, append them in different rows
     for (let index = 0; index < historyLogList.length; index++) {
@@ -50,8 +48,6 @@ function appendHistoryLog(data, divId) {
         document.getElementById(divId).appendChild(node);
     };
 };
-
-sessionStorage.clear();
 
 // function, that gets history logs from database or local storage (if possible)
 //returns unformated data
@@ -75,7 +71,6 @@ async function getHistoryLogs() {
             error: function(error) {
                 throw error;
             }
-
         });
     } else {
         let data = JSON.parse(sessionStorage.getItem("dataFromJson"));
@@ -83,7 +78,6 @@ async function getHistoryLogs() {
 
         return data;
     };
-
 };
 
 // function that posts attendance to database, check-in to be specific
@@ -118,14 +112,6 @@ async function checkOut() {
 
     });
 };
-
-
-// getHistoryLogs()
-//     .then(function(data) {
-//         for (let index = 0; index < 10; index++) {
-//             console.log(data[index]);
-//         }
-//     });
 
 // actual code, that runs
 // get data from file and save them to sessionStorage, then log it to console, then append data to HTML
