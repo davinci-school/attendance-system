@@ -1,11 +1,9 @@
 //clear sessionStorage on every page laod
 sessionStorage.clear();
 
-
-
 // fetch data from local JSON file, function returns data
 async function getAllHistoryLogs(date) {
-    const endpoint = "data.json";
+    const endpoint = "status.json";
 
     // if there are no data at sessionStorage, use get request, 
     // else use those stored data, to avoid unnecceseary load on server and processing time
@@ -31,6 +29,74 @@ async function getAllHistoryLogs(date) {
         return data;
     };
 };
+
+function appendUser(data, divId) {
+    let newDiv = document.createElement("div");
+    newDiv.id = divId;
+    newDiv.className = "statusWrap";
+    document.getElementById("attendance").appendChild(newDiv);
+
+    var name = data.user_name;
+    var status = "";
+
+    if (data.time_in && data.time_out) {
+        status = "O";
+    } else if (data.time_in) {
+        status = "P"
+    } else if (!data.time_in && !data.time_out) {
+        status = "No status" //status has no value
+    }
+
+    console.log(status, name);
+
+    let node = document.createElement("p");
+    node.classname = "userName";
+    var textNode = document.createTextNode(name);
+    node.appendChild(textNode);
+    document.getElementById(divId).appendChild(node);
+
+    node = document.createElement("p");
+    node.classname = "userStats";
+    var textNode = document.createTextNode(status);
+    node.appendChild(textNode);
+    document.getElementById(divId).appendChild(node);
+
+    //also add more icon (adding this note for later)
+};
+
+
+
+//actual code that runs
+getAllHistoryLogs()
+    .then(function(data) {
+        console.log(data);
+        appendUser(data[0], "div1");
+        appendUser(data[1], "div1");
+        appendUser(data[2], "div1");
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //post user check-in that overwrites database data
@@ -72,82 +138,3 @@ async function postUserCheckut(username, year, month, day, hour, minute, second)
     });
     return;
 }
-
-// postUserCheckin("Jana Trojanová", "2019", "12", "2", "15", "21", "44");¨
-
-
-
-//actual code that runs
-getAllHistoryLogs()
-    .then(function(data) {
-        console.log(data);
-    });
-
-
-
-
-//format date to JS object (for time in)
-function formatDate_timeIn(object) {
-
-    var year = "",
-        month = "",
-        day = "",
-        hour = "",
-        minute = "",
-        second = "";
-
-    for (let i = 0; i < 4; i++) {
-        year = year + object.date[i];
-    };
-    for (let i = 5; i < 7; i++) {
-        month = month + object.date[i];
-    };
-    for (let i = 8; i < 10; i++) {
-        day = day + object.date[i];
-    };
-    for (let i = 0; i < 2; i++) {
-        hour = hour + object.time_in[i];
-    }
-    for (let i = 3; i < 5; i++) {
-        minute = minute + object.time_in[i];
-    }
-    for (let i = 6; i < 8; i++) {
-        second = second + object.time_in[i];
-    }
-
-    var date = new Date(year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second);
-    return date;
-};
-
-//format date to JS object (for time out)
-function formatDate_timeOut(object) {
-
-    var year = "",
-        month = "",
-        day = "",
-        hour = "",
-        minute = "",
-        second = "";
-
-    for (let i = 0; i < 4; i++) {
-        year = year + object.date[i];
-    };
-    for (let i = 5; i < 7; i++) {
-        month = month + object.date[i];
-    };
-    for (let i = 8; i < 10; i++) {
-        day = day + object.date[i];
-    };
-    for (let i = 0; i < 2; i++) {
-        hour = hour + object.time_out[i];
-    }
-    for (let i = 3; i < 5; i++) {
-        minute = minute + object.time_out[i];
-    }
-    for (let i = 6; i < 8; i++) {
-        second = second + object.time_out[i];
-    }
-
-    var date = new Date(year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second);
-    return date;
-};

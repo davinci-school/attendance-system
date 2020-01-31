@@ -22,7 +22,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use('/home', express.static(path.join(__dirname, '../user-page/user_homepage')))
 
 const mysql = require('mysql');
-const LOCALHOST = false;
+const LOCALHOST = true;
 
 class Database {
     constructor(config) {
@@ -167,8 +167,7 @@ app.get('/user_data_past_month', redirectLogin, (req, res) => {
         ON u.ID_users = t.ID_users 
         WHERE t.ID_users=?  
         AND time_in BETWEEN SUBDATE(CURDATE(), INTERVAL 1 MONTH) AND NOW() 
-        ORDER BY t.time_in DESC`,
-        [req.session.userid])
+        ORDER BY t.time_in DESC`, [req.session.userid])
         .then(results => {
             res.send(results)
             res.send(results.name, results.time_in, results.time_out)
