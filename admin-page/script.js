@@ -50,13 +50,13 @@ function appendUser(data, divId) {
     console.log(status, name);
 
     let node = document.createElement("p");
-    node.classname = "userName";
+    node.className = "userName";
     var textNode = document.createTextNode(name);
     node.appendChild(textNode);
     document.getElementById(divId).appendChild(node);
 
     node = document.createElement("p");
-    node.classname = "userStats";
+    node.className = "userStatus";
     var textNode = document.createTextNode(status);
     node.appendChild(textNode);
     document.getElementById(divId).appendChild(node);
@@ -71,8 +71,8 @@ getAllHistoryLogs()
     .then(function(data) {
         console.log(data);
         appendUser(data[0], "div1");
-        appendUser(data[1], "div1");
-        appendUser(data[2], "div1");
+        appendUser(data[1], "div2");
+        appendUser(data[2], "div3");
     });
 
 

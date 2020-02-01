@@ -1,3 +1,28 @@
 body {
     font-family: "Roboto", sans-serif;
 }
+
+.statusWrap {
+    display: flex;
+    border: solid;
+    border-width: 1px;
+}
+
+.attendance {
+    display: flex;
+    flex-direction: column;
+}
+
+.userName {
+    width: 35%;
+}
+
+.userStatus,
+.userName {
+    padding: 10px;
+}
+
+body {
+    max-width: 500px;
+    min-width: 360px;
+}
