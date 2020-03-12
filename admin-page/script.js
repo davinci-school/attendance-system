@@ -6,7 +6,7 @@ async function getAllHistoryLogs(date) {
     const endpoint = "status.json";
 
     // if there are no data at sessionStorage, use get request, 
-    // else use those stored data, to avoid unnecceseary load on server and processing time
+    // else, use those stored data, to avoid unnecceseary load on server and processing time
     if (sessionStorage.getItem("dataFromJson") == null) {
         return $.ajax({
             url: endpoint,
@@ -30,6 +30,7 @@ async function getAllHistoryLogs(date) {
     };
 };
 
+//apend user to page
 function appendUser(data, divId) {
     let newDiv = document.createElement("div");
     newDiv.id = divId;
@@ -44,10 +45,10 @@ function appendUser(data, divId) {
     } else if (data.time_in) {
         status = "P"
     } else if (!data.time_in && !data.time_out) {
-        status = "No status" //status has no value
+        status = "null" //status has no value
     }
 
-    console.log(status, name);
+    // console.log(status, name);
 
     let node = document.createElement("p");
     node.className = "userName";
@@ -62,42 +63,51 @@ function appendUser(data, divId) {
     document.getElementById(divId).appendChild(node);
 
     //also add more icon (adding this note for later)
+    divId = divId + "Overlay";
+
+    newDiv = document.createElement("div");
+    newDiv.id = divId
+    newDiv.className = "popupWrap";
+    document.getElementById("attendance").appendChild(newDiv);
+
+    //set display property to 'none'
+    document.getElementById(divId).style.display = "none"
+
+    let text = name + " - zapsat příchod"
+    node = document.createElement("p");
+    node.className = "userNameCheckIn";
+    textNode = document.createTextNode(text);
+    node.appendChild(textNode);
+    document.getElementById(divId).appendChild(node);
+
+    text = "Vyberte čas příchodu"
+    node = document.createElement("p");
+    node.className = "userNameCheckIn";
+    textNode = document.createTextNode(text);
+    node.appendChild(textNode);
+    document.getElementById(divId).appendChild(node);
+
+    text = "Zrušit";
+    node = document.createElement("button");
+    node.innerHTML = text;
+    document.getElementById(divId).appendChild(node);
+
+    text = "Potvrdit příchod";
+    node = document.createElement("button");
+    node.innerHTML = text;
+    document.getElementById(divId).appendChild(node);
+
 };
 
 
-
-//actual code that runs
+//ACTUAL CODE that runs
 getAllHistoryLogs()
     .then(function(data) {
-        console.log(data);
+        // console.log(data);
         appendUser(data[0], "div1");
         appendUser(data[1], "div2");
         appendUser(data[2], "div3");
     });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //post user check-in that overwrites database data
 async function postUserCheckin(username, year, month, day, hour, minute, second) {
@@ -134,7 +144,15 @@ async function postUserCheckut(username, year, month, day, hour, minute, second)
         error: function(error) {
             throw error;
         }
-
     });
     return;
+}
+
+document.getElementById("ToggleButton").onclick = function() {
+    var x = document.getElementById("myPopup2")
+    if (x.style.display === "none") {
+        x.style.display = "initial"
+    } else {
+        x.style.display = "none";
+    }
 }
