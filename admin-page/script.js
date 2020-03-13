@@ -32,6 +32,7 @@ async function getAllHistoryLogs(date) {
 
 //apend user to page
 function appendUser(data, divId) {
+
     let newDiv = document.createElement("div");
     newDiv.id = divId;
     newDiv.className = "statusWrap";
@@ -48,29 +49,33 @@ function appendUser(data, divId) {
         status = "null" //status has no value
     }
 
-    // console.log(status, name);
-
     let node = document.createElement("p");
     node.className = "userName";
     var textNode = document.createTextNode(name);
     node.appendChild(textNode);
     document.getElementById(divId).appendChild(node);
 
-    node = document.createElement("p");
+    //append button with status
+    node = document.createElement("button");
+
+    //create and set function for toggle, activated by button
+    var functionName = "togglePopup('" + divId + "Overlay')"
+    node.setAttribute("onclick", functionName)
+
     node.className = "userStatus";
     var textNode = document.createTextNode(status);
     node.appendChild(textNode);
     document.getElementById(divId).appendChild(node);
 
-    //also add more icon (adding this note for later)
-    divId = divId + "Overlay";
 
+    //append pop-up for check-in    
+    divId = divId + "Overlay";
     newDiv = document.createElement("div");
     newDiv.id = divId
     newDiv.className = "popupWrap";
     document.getElementById("attendance").appendChild(newDiv);
 
-    //set display property to 'none'
+    //set display property pf pop-up to 'none'
     document.getElementById(divId).style.display = "none"
 
     let text = name + " - zapsat příchod"
@@ -154,5 +159,17 @@ document.getElementById("ToggleButton").onclick = function() {
         x.style.display = "initial"
     } else {
         x.style.display = "none";
-    }
+    };
+}
+
+function togglePopup(elementId) {
+    let element = document.getElementById(elementId)
+    if (element.style.display === "none") {
+        element.style.display = "initial"
+    } else {
+        element.style.display = "none"
+    };
+
+    // document.getElementById(elementId).style.display = "initial"
+
 }
