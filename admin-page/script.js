@@ -32,7 +32,9 @@ async function getAllHistoryLogs(date) {
 
 //apend user to page
 function appendUser(data, divId) {
+    var divNumber = divId
 
+    divId = divNumber
     let newDiv = document.createElement("div");
     newDiv.id = divId;
     newDiv.className = "statusWrap";
@@ -49,29 +51,42 @@ function appendUser(data, divId) {
         status = "null" //status has no value
     }
 
+
+
+    //append user name to div
     let node = document.createElement("p");
     node.className = "userName";
     var textNode = document.createTextNode(name);
     node.appendChild(textNode);
     document.getElementById(divId).appendChild(node);
 
+
     //append button with status
     node = document.createElement("button");
+    node.innerHTML = status
+    node.id = divId + "button"
+    node.className = "userStatus";
 
     //create and set function for toggle, activated by button
-    var functionName = "togglePopup('" + divId + "Overlay')"
+    var functionName = "togglePopup('" + divNumber + "Overlay')"
     node.setAttribute("onclick", functionName)
 
-    node.className = "userStatus";
-    var textNode = document.createTextNode(status);
-    node.appendChild(textNode);
     document.getElementById(divId).appendChild(node);
+
+
+    //append pop-up for action menu
+    // newDiv = document.createElement("div");
+    // newDiv.id = divId + "Menu";
+    // newDiv.className = "" //doplnit class
+    // document.getElementById("attendance").appendChild(newDiv + "Menu");
+
+
 
 
     //append pop-up for check-in    
     divId = divId + "Overlay";
     newDiv = document.createElement("div");
-    newDiv.id = divId
+    newDiv.id = divId;
     newDiv.className = "popupWrap";
     document.getElementById("attendance").appendChild(newDiv);
 
