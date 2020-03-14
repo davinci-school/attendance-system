@@ -75,10 +75,11 @@ function appendUser(data, divId) {
 
 
     //append pop-up for action menu
-    // newDiv = document.createElement("div");
-    // newDiv.id = divId + "Menu";
+    newDiv = document.createElement("div");
+    newDiv.id = divId + "Menu";
     // newDiv.className = "" //doplnit class
-    // document.getElementById("attendance").appendChild(newDiv + "Menu");
+    document.getElementById("attendance").appendChild(newDiv);
+
 
 
 
@@ -127,6 +128,7 @@ getAllHistoryLogs()
         appendUser(data[0], "div1");
         appendUser(data[1], "div2");
         appendUser(data[2], "div3");
+        appendUser(data[3], "div4")
     });
 
 //post user check-in that overwrites database data
