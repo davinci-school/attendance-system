@@ -32,7 +32,7 @@ async function getAllHistoryLogs(date) {
 
 //apend user to page
 function appendUser(data, divId) {
-    console.log(data);
+    // console.log(data);
 
     var divNumber = divId
 
@@ -70,12 +70,57 @@ function appendUser(data, divId) {
     node.id = divId + "button"
     node.className = "userStatus";
 
+
     //create and set function for toggle, activated by button
-    var functionName = "togglePopup('" + divNumber + "OverlayJunction')"
+    var functionName = "togglePopup('" + divNumber + "Junction')"
     node.setAttribute("onclick", functionName)
 
     document.getElementById(divId).appendChild(node);
 
+    //----------------------------------------------------
+    //append pop-up JUNCTION
+    newDiv = document.createElement("div");
+    newDiv.id = divId + "Junction";
+    newDivId = newDiv.id;
+    newDiv.className = "overlayJunction" //doplnit class
+    document.getElementById("attendance").appendChild(newDiv);
+
+    newDivObject = document.getElementById(newDivId);
+    //save user name for late check-in/out
+    newDivObject.dataset.userName = data.user_name;
+    //make it invisible by default
+    newDivObject.style.display = "none"
+
+
+    var togglePopupFunction = "togglePopup('" + divNumber + "Overlay')";
+
+    // junctionToggleAction();
+    //buttons that trigger next popup to post attendance
+    var text = "P - příchod"
+    node = node = document.createElement("button");
+    console.log(divNumber + "Overlay");
+
+    functionName = "junctionButtonAction(" + divNumber + ")";
+    node.setAttribute("onclick", functionName);
+    node.innerHTML = text;
+    newDivObject.appendChild(node);
+
+    text = "O - odchod"
+    node = node = document.createElement("button");
+    node.setAttribute("onclick", functionName);
+    node.innerHTML = text;
+    newDivObject.appendChild(node);
+
+    text = "N - absence"
+    node = node = document.createElement("button");
+    node.setAttribute("onclick", functionName);
+    node.innerHTML = text;
+    newDivObject.appendChild(node);
+
+    //create and set function for toggle, activated by button
+
+
+    //----------------------------------------------------
     //append pop-up for check-in    
     divId = divId + "Overlay";
     newDiv = document.createElement("div");
@@ -86,7 +131,7 @@ function appendUser(data, divId) {
     //set display property pf pop-up to 'none'
     document.getElementById(divId).style.display = "none"
 
-    let text = name + " - zapsat příchod"
+    text = name + " - zapsat příchod"
     node = document.createElement("p");
     node.className = "userNameCheckIn";
     textNode = document.createTextNode(text);
@@ -103,7 +148,7 @@ function appendUser(data, divId) {
     text = "Zrušit";
     node = document.createElement("button");
     node.innerHTML = text;
-    console.log(divId);
+    // console.log(divId);
 
     document.getElementById(divId).appendChild(node);
 
@@ -113,49 +158,13 @@ function appendUser(data, divId) {
     document.getElementById(divId).appendChild(node);
 
 
-    //append pop-up for action Junction
-    newDiv = document.createElement("div");
-    newDiv.id = divId + "Junction";
-    newDivId = newDiv.id;
-    newDiv.className = "overlayJunction" //doplnit class
-    document.getElementById("attendance").appendChild(newDiv);
-
-    newDivObject = document.getElementById(newDivId);
-    newDivObject.dataset.userName = data.user_name;
-    // print userName dataset of div element
-    // console.log(newDivObject.dataset.userName);
-
-    newDivObject.style.display = "none"
-
-
-    var functionName = "togglePopup('" + divNumber + "Overlay')";
-    //buttons that trigger next popup to post attendance
-    text = "P - příchod"
-    node = node = document.createElement("button");
-    node.setAttribute("onclick", functionName)
-    node.innerHTML = text;
-    newDivObject.appendChild(node);
-
-    text = "O - odchod"
-    node = node = document.createElement("button");
-    node.setAttribute("onclick", functionName)
-    node.innerHTML = text;
-    newDivObject.appendChild(node);
-
-    text = "N - absence"
-    node = node = document.createElement("button");
-    node.setAttribute("onclick", functionName)
-    node.innerHTML = text;
-    newDivObject.appendChild(node);
-
-    //create and set function for toggle, activated by button
 
 
 
 };
 
 
-//ACTUAL CODE that runs
+//ACTUAL CODE that runs//----------------------------------------------------
 getAllHistoryLogs()
     .then(function(data) {
         // console.log(data);
@@ -222,4 +231,19 @@ function togglePopup(elementId) {
     };
 
     // document.getElementById(elementId).style.display = "initial"
+
 }
+
+// function junctionButtonToggle(elementId)
+
+//function to toggle Junction and Overlay
+function junctionButtonAction(input) {
+    // togglePopup(divNumber + "Overlay")
+    console.log(typeof(input));
+
+    console.log(input.toString());
+
+    // togglePopup(divNumber + "Overlay");
+
+    // togglePopup(divNumber + "Junction")
+};
