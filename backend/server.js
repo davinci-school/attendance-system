@@ -19,10 +19,10 @@ app.use(session({
     }
 }));
 app.use(express.urlencoded({ extended: true }))
-app.use('/home', express.static(path.join(__dirname, '../user-page/user_homepage')))
+
 
 const mysql = require('mysql');
-const LOCALHOST = false;
+const LOCALHOST = true;
 
 class Database {
     constructor(config) {
@@ -69,32 +69,39 @@ if (LOCALHOST) {
 connection = new Database(config)
 
 // test connection and see all data in time_board
-connection.query('SELECT * from time_board')
+connection.query('SELECT * from users WHERE ID_users=1')
     .then(rows => console.log(rows))
     .catch(err => console.log(err))
 
 // Redirect function
 const redirectLogin = (req, res, next) => {
+    console.log("redirectLogin,req.session.userid= " + req.session.userid);
     if (!req.session.userid) {
         res.redirect("/Login")
     } else { next() }
 }
 
 const redirectHome = (req, res, next) => {
+    console.log("redirectHome,req.session.userid= " + req.session.userid)
     if (req.session.userid) {
-        res.redirect("/home")
+        res.redirect("/Home")
     } else { next() }
 }
+
+// Do not move app.use
+// Relative path must be specified after the redirect function but before the route
+app.use('/Home', redirectLogin, express.static(path.join(__dirname, '../user-page/user_homepage')))
 
 const convertSQL = (results) => {
     return (JSON.parse(JSON.stringify(results[0])))
 }
 
 const checkUserExist = (results, req, res) => {
+    console.log("checkUserExist")
     if (results.length > 0) { // SQL query return a match
         var rows = convertSQL(results)
         req.session.userid = rows.ID_users; // set session ID to user ID
-        res.redirect('/home');
+        res.redirect('/Home');
     } else {
         res.send('Incorrect Username and/or Password!');
     }
@@ -121,45 +128,44 @@ const checkUserAuthorization = (results, req, res) => {
 app.get('/', (req, res) => {
     res.send(`
     <h1>Hello world</h1>
-    <a href='/login'>login</a>
-    <a href='/home'>home </a>
+    <a href='/Login'>login</a>
+    <a href='/Home'>home </a>
   `)
 })
-app.get('/home', redirectLogin, (req, res) => {
+
+
+
+
+app.route("/Home")
+.get(redirectLogin, (req, res) => {
     res.sendFile("index.html")
 })
 
 
 app.route("/Login")
-    .get(redirectHome, (req, res) => {
-        console.log(req.session)
-        res.send(`
-    <h1>Login page</h1>
-    <form method="post" action="/login">
-      <input type="email" name="email" placeholder="Email" require />
-      <input type="password" name="password" placeholder="Password" require />
-      <input type="submit"/>
-    </form>
-    `)
-    })
+.get(redirectHome, (req, res) => {
+    console.log(req.session)
+    res.send(`
+        <h1>Login page</h1>
+        <form method="post" action="/login">
+            <input type="email" name="email" placeholder="Email" require />
+            <input type="password" name="password" placeholder="Password" require />
+            <input type="submit"/>
+        </form>
+        `)
+})
 
 .post(redirectHome, (req, res) => {
-        const { email, password } = req.body
-        console.log(email, password)
-        connection.query('SELECT * FROM users WHERE Email = ? AND password = ?', [email, password])
-            .then(results => checkUserExist(results, req, res))
-            .catch(err => console.log(err))
-    }) //end of post
+    const { email, password } = req.body
+    console.log(email, password)
+    connection.query('SELECT * FROM users WHERE Email = ? AND password = ?', [email, password])
+        .then(results => checkUserExist(results, req, res))
+        .catch(err => console.log(err))
+}) //end of post
 
-
-app.get('/users', (req, res) => {
-    const allUsernames = Object.keys(Database);
-    console.log('list of allUsernames is:', allUsernames);
-    res.send(allUsernames);
-});
 
 app.get('/user_data_past_month', redirectLogin, (req, res) => {
-
+    console.log("user_data_past_month")
     connection.query(`
         SELECT u.username, t.time_in, t.time_out 
         FROM users u 
@@ -171,7 +177,7 @@ app.get('/user_data_past_month', redirectLogin, (req, res) => {
         [req.session.userid])
         .then(results => {
             res.send(results)
-            res.send(results.name, results.time_in, results.time_out)
+            //res.send(results.name, results.time_in, results.time_out)
         })
         .catch(error => console.log(error))
 
