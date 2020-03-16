@@ -32,11 +32,14 @@ async function getAllHistoryLogs(date) {
 
 //apend user to page
 function appendUser(data, divId) {
+    console.log(data);
+
     var divNumber = divId
 
     divId = divNumber
     let newDiv = document.createElement("div");
     newDiv.id = divId;
+
     newDiv.className = "statusWrap";
     document.getElementById("attendance").appendChild(newDiv);
 
@@ -68,21 +71,10 @@ function appendUser(data, divId) {
     node.className = "userStatus";
 
     //create and set function for toggle, activated by button
-    var functionName = "togglePopup('" + divNumber + "Overlay')"
+    var functionName = "togglePopup('" + divNumber + "OverlayJunction')"
     node.setAttribute("onclick", functionName)
 
     document.getElementById(divId).appendChild(node);
-
-
-    //append pop-up for action menu
-    newDiv = document.createElement("div");
-    newDiv.id = divId + "Menu";
-    // newDiv.className = "" //doplnit class
-    document.getElementById("attendance").appendChild(newDiv);
-
-
-
-
 
     //append pop-up for check-in    
     divId = divId + "Overlay";
@@ -111,12 +103,54 @@ function appendUser(data, divId) {
     text = "Zrušit";
     node = document.createElement("button");
     node.innerHTML = text;
+    console.log(divId);
+
     document.getElementById(divId).appendChild(node);
 
     text = "Potvrdit příchod";
     node = document.createElement("button");
     node.innerHTML = text;
     document.getElementById(divId).appendChild(node);
+
+
+    //append pop-up for action Junction
+    newDiv = document.createElement("div");
+    newDiv.id = divId + "Junction";
+    newDivId = newDiv.id;
+    newDiv.className = "overlayJunction" //doplnit class
+    document.getElementById("attendance").appendChild(newDiv);
+
+    newDivObject = document.getElementById(newDivId);
+    newDivObject.dataset.userName = data.user_name;
+    // print userName dataset of div element
+    // console.log(newDivObject.dataset.userName);
+
+    newDivObject.style.display = "none"
+
+
+    var functionName = "togglePopup('" + divNumber + "Overlay')";
+    //buttons that trigger next popup to post attendance
+    text = "P - příchod"
+    node = node = document.createElement("button");
+    node.setAttribute("onclick", functionName)
+    node.innerHTML = text;
+    newDivObject.appendChild(node);
+
+    text = "O - odchod"
+    node = node = document.createElement("button");
+    node.setAttribute("onclick", functionName)
+    node.innerHTML = text;
+    newDivObject.appendChild(node);
+
+    text = "N - absence"
+    node = node = document.createElement("button");
+    node.setAttribute("onclick", functionName)
+    node.innerHTML = text;
+    newDivObject.appendChild(node);
+
+    //create and set function for toggle, activated by button
+
+
 
 };
 
@@ -128,13 +162,13 @@ getAllHistoryLogs()
         appendUser(data[0], "div1");
         appendUser(data[1], "div2");
         appendUser(data[2], "div3");
-        appendUser(data[3], "div4")
     });
+
 
 //post user check-in that overwrites database data
 async function postUserCheckin(username, year, month, day, hour, minute, second) {
     const endpoint = "/admin_edit/" + username + "/checkin/" + year + "_" + month + "_" + day + "/" + hour + ":" + minute + ":" + second;
-    console.log(endpoint);
+    //console.log(endpoint);
 
     $.ajax({
         url: endpoint,
@@ -170,14 +204,14 @@ async function postUserCheckut(username, year, month, day, hour, minute, second)
     return;
 }
 
-document.getElementById("ToggleButton").onclick = function() {
-    var x = document.getElementById("myPopup2")
-    if (x.style.display === "none") {
-        x.style.display = "initial"
-    } else {
-        x.style.display = "none";
-    };
-}
+// document.getElementById("ToggleButton").onclick = function() {
+//     var x = document.getElementById("myPopup2")
+//     if (x.style.display === "none") {
+//         x.style.display = "initial"
+//     } else {
+//         x.style.display = "none";
+//     };
+// }
 
 function togglePopup(elementId) {
     let element = document.getElementById(elementId)
@@ -188,5 +222,4 @@ function togglePopup(elementId) {
     };
 
     // document.getElementById(elementId).style.display = "initial"
-
 }

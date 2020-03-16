@@ -51,7 +51,8 @@
      display: inline-block;
  }
  
- .popupWrap {
+ .popupWrap,
+ .overlayJunction {
      padding: 5px;
      margin-bottom: 10px;
      border: solid;
