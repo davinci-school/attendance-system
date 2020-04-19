@@ -1,5 +1,5 @@
-//clear sessionStorage on every page laod
-sessionStorage.clear();
+// //clear sessionStorage on every page laod
+// sessionStorage.clear();
 
 // fetch data from local JSON file, function returns data
 async function getAllHistoryLogs(date) {
@@ -94,7 +94,6 @@ function appendUser(data, divId) {
 
     var togglePopupFunction = "togglePopup('" + divNumber + "Overlay')";
 
-    // junctionToggleAction();
     //buttons that trigger next popup to post attendance
     var text = "P - příchod"
     node = node = document.createElement("button");
@@ -180,6 +179,37 @@ getAllHistoryLogs()
     });
 
 
+
+
+function togglePopup(elementId) {
+    let element = document.getElementById(elementId)
+    if (element.style.display === "none") {
+        element.style.display = "initial"
+    } else {
+        element.style.display = "none"
+    };
+
+    // document.getElementById(elementId).style.display = "initial"
+
+}
+
+//function to toggle Junction and Overlay
+function junctionButtonAction(input, ) {
+    // togglePopup(divNumber + "Overlay")
+    console.log(typeof(input));
+
+    console.log(input.toString());
+
+    togglePopup(input.id + "Overlay");
+
+    togglePopup(input.id + "Junction")
+};
+
+function pageRefresh() {
+    window.location.reload()
+    sessionStorage.clear();
+}
+
 //post user check-in that overwrites database data
 async function postUserCheckin(username, year, month, day, hour, minute, second) {
     const endpoint = "/admin_edit/" + username + "/checkin/" + year + "_" + month + "_" + day + "/" + hour + ":" + minute + ":" + second;
@@ -218,38 +248,3 @@ async function postUserCheckut(username, year, month, day, hour, minute, second)
     });
     return;
 }
-
-// document.getElementById("ToggleButton").onclick = function() {
-//     var x = document.getElementById("myPopup2")
-//     if (x.style.display === "none") {
-//         x.style.display = "initial"
-//     } else {
-//         x.style.display = "none";
-//     };
-// }
-
-function togglePopup(elementId) {
-    let element = document.getElementById(elementId)
-    if (element.style.display === "none") {
-        element.style.display = "initial"
-    } else {
-        element.style.display = "none"
-    };
-
-    // document.getElementById(elementId).style.display = "initial"
-
-}
-
-// function junctionButtonToggle(elementId)
-
-//function to toggle Junction and Overlay
-function junctionButtonAction(input) {
-    // togglePopup(divNumber + "Overlay")
-    console.log(typeof(input));
-
-    console.log(input.toString());
-
-    togglePopup(input.id + "Overlay");
-
-    togglePopup(input.id + "Junction")
-};
