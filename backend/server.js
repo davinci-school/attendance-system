@@ -6,6 +6,10 @@ const session = require("express-session")
 const app = express();
 const path = require('path');
 const https = require('https');
+const authRoutes = require('./routes/authorization')
+const passportSetup = require('./config/passport-setup')
+
+app.set('view engine','ejs')
 
 app.use(session({
     name: "sid",
@@ -90,7 +94,7 @@ const redirectHome = (req, res, next) => {
 
 // Do not move app.use
 // Relative path must be specified after the redirect function but before the route
-app.use('/Home', redirectLogin, express.static(path.join(__dirname, '../user-page/user_homepage')))
+//app.use('/Home', redirectLogin, express.static(path.join(__dirname, '../user-page/user_homepage')))
 
 const convertSQL = (results) => {
     return (JSON.parse(JSON.stringify(results[0])))
@@ -127,62 +131,64 @@ const checkUserAuthorization = (results, req, res) => {
 
 app.get('/', (req, res) => {
     res.send(`
-    <h1>Hello world</h1>
-    <a href='/Login'>login</a>
-    <a href='/Home'>home </a>
+    <h1>Welcome page</h1>
+    <a href='/auth/login'>login</a>
+    <a href='/home'> home </a>
   `)
 })
 
 
 
 
-app.route("/Home")
-.get(redirectLogin, (req, res) => {
-    res.sendFile("index.html")
-})
+// app.route("/Home")
+// .get(redirectLogin, (req, res) => {
+//     res.sendFile("index.html")
+// })
 
 
-app.route("/Login")
-.get(redirectHome, (req, res) => {
-    console.log(req.session)
-    res.send(`
-        <h1>Login page</h1>
-        <form method="post" action="/login">
-            <input type="email" name="email" placeholder="Email" require />
-            <input type="password" name="password" placeholder="Password" require />
-            <input type="submit"/>
-        </form>
-        `)
-})
+// app.route("/Login")
+// .get(redirectHome, (req, res) => {
+//     console.log(req.session)
+//     res.send(`
+//         <h1>Login page</h1>
+//         <form method="post" action="/login">
+//             <input type="email" name="email" placeholder="Email" require />
+//             <input type="password" name="password" placeholder="Password" require />
+//             <input type="submit"/>
+//         </form>
+//         `)
+// })
 
-.post(redirectHome, (req, res) => {
-    const { email, password } = req.body
-    console.log(email, password)
-    connection.query('SELECT * FROM users WHERE Email = ? AND password = ?', [email, password])
-        .then(results => checkUserExist(results, req, res))
-        .catch(err => console.log(err))
-}) //end of post
+// .post(redirectHome, (req, res) => {
+//     const { email, password } = req.body
+//     console.log(email, password)
+//     connection.query('SELECT * FROM users WHERE Email = ? AND password = ?', [email, password])
+//         .then(results => checkUserExist(results, req, res))
+//         .catch(err => console.log(err))
+// }) //end of post
 
 
-app.get('/user_data_past_month', redirectLogin, (req, res) => {
-    console.log("user_data_past_month")
-    connection.query(`
-        SELECT u.username, t.time_in, t.time_out 
-        FROM users u 
-        JOIN time_board t 
-        ON u.ID_users = t.ID_users 
-        WHERE t.ID_users=?  
-        AND time_in BETWEEN SUBDATE(CURDATE(), INTERVAL 1 MONTH) AND NOW() 
-        ORDER BY t.time_in DESC`,
-        [req.session.userid])
-        .then(results => {
-            res.send(results)
-            //res.send(results.name, results.time_in, results.time_out)
-        })
-        .catch(error => console.log(error))
+// app.get('/user_data_past_month', redirectLogin, (req, res) => {
+//     console.log("user_data_past_month")
+//     connection.query(`
+//         SELECT u.username, t.time_in, t.time_out 
+//         FROM users u 
+//         JOIN time_board t 
+//         ON u.ID_users = t.ID_users 
+//         WHERE t.ID_users=?  
+//         AND time_in BETWEEN SUBDATE(CURDATE(), INTERVAL 1 MONTH) AND NOW() 
+//         ORDER BY t.time_in DESC`,
+//         [req.session.userid])
+//         .then(results => {
+//             res.send(results)
+//             //res.send(results.name, results.time_in, results.time_out)
+//         })
+//         .catch(error => console.log(error))
 
-});
+// });
 
+// set up Routes
+app.use('/auth',authRoutes, express.static(path.join(__dirname, '../home-page')))
 
 app.listen(3000, function() {
     console.log("Connected to server, port 3000")
