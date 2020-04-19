@@ -98,10 +98,10 @@ function appendUser(data, divId) {
     //buttons that trigger next popup to post attendance
     var text = "P - příchod"
     node = document.createElement("button");
-    console.log(divNumber + "Overlay");
+    // console.log(divNumber + "Overlay");
 
     functionName = "junctionButtonAction(" + divNumber + ")";
-    console.log(functionName);
+    // console.log(functionName);
 
     node.setAttribute("onclick", functionName);
     node.innerHTML = text;
@@ -241,11 +241,10 @@ function togglePopup(elementId) {
 //function to toggle Junction and Overlay
 function junctionButtonAction(input) {
     // togglePopup(divNumber + "Overlay")
-    console.log(typeof(input));
 
-    console.log(input);
+    // console.log(input.id);
 
-    togglePopup(input + "Overlay");
+    togglePopup(input.id + "Overlay");
 
-    // togglePopup(divNumber + "Junction")
+    togglePopup(input.id + "Junction")
 };
