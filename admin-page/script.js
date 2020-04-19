@@ -98,7 +98,7 @@ function appendUser(data, divId) {
     //buttons that trigger next popup to post attendance
     var text = "P - příchod"
     node = node = document.createElement("button");
-    console.log(divNumber + "Overlay");
+    // console.log(divNumber + "Overlay");
 
     functionName = "junctionButtonAction(" + divNumber + ")";
     node.setAttribute("onclick", functionName);
@@ -143,6 +143,12 @@ function appendUser(data, divId) {
     node.className = "userNameCheckIn";
     textNode = document.createTextNode(text);
     node.appendChild(textNode);
+    document.getElementById(divId).appendChild(node);
+
+    var d = new Date()
+    node = document.createElement("input");
+    node.type = "time";
+    node.value = d.getHours() + ":" + d.getMinutes();
     document.getElementById(divId).appendChild(node);
 
     text = "Zrušit";
@@ -243,7 +249,7 @@ function junctionButtonAction(input) {
 
     console.log(input.toString());
 
-    // togglePopup(divNumber + "Overlay");
+    togglePopup(input.id + "Overlay");
 
-    // togglePopup(divNumber + "Junction")
+    togglePopup(input.id + "Junction")
 };
