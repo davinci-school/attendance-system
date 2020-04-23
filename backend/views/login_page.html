@@ -8,6 +8,47 @@
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <meta name="google-signin-client_id" content="624348957845-tecgbgc89gi38ife3psisn3mjcv6k715.apps.googleusercontent.com">
     !-->
+    <style>
+      body{
+          font-family: arial;
+          margin: 0;
+      }
+      nav{
+          background: #ff5353;
+          padding: 20px 10px;
+      }
+      nav ul{
+          max-width: 960px;
+          margin: 0 auto;
+          padding: 0;
+      }
+      nav li{
+          list-style-type: none;
+          display: inline-block;
+          margin: 0 10px 0 0;
+      }
+      nav a{
+          color: #fff;
+          font-size: 18px;
+          background: rgba(255,255,255,0.2);
+          text-decoration: none;
+          padding: 10px;
+          display: block;
+      }
+      main, header{
+          max-width: 960px;
+          margin: 30px auto;
+          padding: 0 10px;
+          color: #333;
+      }
+      .google-btn{
+          color: #fff;
+          text-decoration: none;
+          font-size: 18px;
+          padding: 10px;
+          background: #ff5353;
+      }
+  </style>
 </head>
 <body>
     <h1>Login page</h1>
@@ -26,9 +67,12 @@
     });
   }
 </script>
- !-->
+ 
+ !--><nav>
     <li><a href='/auth/google'>Google+</a>
     <li><a href='/auth/logout'>logout</a>
     <li><a href='/'>home </a>
+    </nav>
+ 
 </body>
 </html>

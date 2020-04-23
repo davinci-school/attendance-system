@@ -10,7 +10,8 @@ router.get('/login', (req, res)=>{
 // auth logout
 router.get('/logout',(req, res)=>{
     // handled with passport
-    res.send('logging out')
+    req.logout();
+    res.redirect('/');   
 })
 
 // auth Google
@@ -18,13 +19,9 @@ router.get('/google',passport.authenticate('google',{
     scope: ['profile','email']
 }))
 
-router.get('/google/redirect',passport.authenticate('google'), (req, res)=>{
-    //res.send(req.user)
-    if (req.user.ac_type='user') {
-        res.sendFile('index.html', {root: './../user-page/user_homepage/'})
-    } else {
-        res.sendFile('index.html', {root: './../admin-page/'})
-    }
+router.get('/google/redirect',passport.authenticate(
+    'google', {failureRedirect: '/auth/login/'}), (req,res)=> {
+        res.redirect('/profile/')
 })
 
 module.exports = router;

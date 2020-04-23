@@ -4,6 +4,7 @@
   "description": "testing commit",
   "main": "index.js",
   "dependencies": {
+    "cookie-session": "^1.4.0",
     "ejs": "^3.0.2",
     "express": "^4.17.1",
     "express-session": "^1.17.0",

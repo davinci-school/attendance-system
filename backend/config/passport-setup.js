@@ -6,11 +6,12 @@ const connection = require('../database/sql-db')
 
 
 passport.serializeUser((user, done)=>{
+    console.log('user.id' + user.id)
     done(null,user.id)
 })
 
 passport.deserializeUser((id, done)=>{
-    // find user by id
+    // find user by id and return account type
     connection.query('SELECT * FROM users WHERE id = ?', [id])
         .then(result => {
             done(null,result[0])
@@ -28,12 +29,13 @@ passport.use(
     connection.query('SELECT * FROM users WHERE Email = ?', [profile.emails[0].value])
         .then(result => {
             if (result.length > 0) { // SQL query return a match
-                // user found
+                // user found store user to cookies
                 console.log(result[0])
                 done(null,result[0])
             } else {
-                // user not found - redirect to login TBD 
+                // user not found - failureRedirect at /google/redirect/ back to login  
                 console.log('user not found')
+                done(null, false)
             }
         })
         .catch(err => console.log(err))

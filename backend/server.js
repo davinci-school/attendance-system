@@ -1,12 +1,12 @@
 // Node.js + Express backend ...
 const Promise = require("promise");
 const express = require("express");
-const cookieSession = require("express-session")
-//cookieSession = require('cookie-session')
+cookieSession = require('cookie-session')
 const app = express();
 const path = require('path');
 const https = require('https');
 const authRoutes = require('./routes/authorization')
+const profileRoutes = require('./routes/profile')
 const passportSetup = require('./config/passport-setup')
 const connection = require('./database/sql-db')
 const passport = require('passport')
@@ -14,26 +14,16 @@ const keys = require('./config/keys')
 
 app.set('view engine','ejs')
 
-// app.use(cookieSession({
-//     maxAge: 24*60*60*1000,
-//     keys: [keys.session.cookieKey]
-// }))
 app.use(cookieSession({
-     name: "sid",
-     resave: false,
-     saveUninitialized: false,
-     secret: "admin1234",
-     cookie: { //create a cookie
-         maxAge: 750000000, //set cookie lifetime to 208.3 hours
-         sameSite: true,
-         secure: false,
-     }
+    maxAge: 24*60*60*1000,
+    keys: [keys.session.cookieKey]
 }));
+
 app.use(passport.initialize());
 app.use(passport.session());
 
 
-app.use(express.urlencoded({ extended: true }))
+//app.use(express.urlencoded({ extended: true }))
 
 // // Redirect function
 // const redirectLogin = (req, res, next) => {
@@ -88,11 +78,7 @@ app.use(express.urlencoded({ extended: true }))
 
 
 app.get('/', (req, res) => {
-     res.send(`
-     <h1>Welcome page</h1>
-     <a href='/auth/login'>login</a>
-     <a href='/home'> home </a>
-   `)
+    res.redirect('/profile/')
 })
 
 
@@ -146,7 +132,8 @@ app.get('/', (req, res) => {
 // });
 
 // set up Routes
-app.use('/auth',authRoutes)
+app.use('/auth',authRoutes);
+app.use('/profile',profileRoutes);
 
 app.listen(3000, function() {
     console.log("Connected to server, port 3000")
