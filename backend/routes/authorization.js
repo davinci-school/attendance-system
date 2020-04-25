@@ -4,9 +4,8 @@ const passport = require('passport')
 // Main login page - can add other servises than Google+
 router.get('/login', (req, res)=>{
     //res.render('login')
-    res.sendFile('login_page.html', {root: './views'})
+    res.sendFile('index.html', {root: '../frontend/login'})
 })
-
 // auth logout
 router.get('/logout',(req, res)=>{
     // handled with passport

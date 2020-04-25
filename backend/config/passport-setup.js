@@ -25,7 +25,7 @@ passport.use(
     clientID: keys.google.clientID,
     clientSecret: keys.google.clientSecret
 }, (accessToken, refreshToken, profile, done)=> {
-    // check if user exist in database
+    // passport callabck function - check if user exist in database
     connection.query('SELECT * FROM users WHERE Email = ?', [profile.emails[0].value])
         .then(result => {
             if (result.length > 0) { // SQL query return a match

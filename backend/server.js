@@ -133,7 +133,8 @@ app.get('/', (req, res) => {
 
 // set up Routes
 app.use('/auth',authRoutes);
-app.use('/profile',profileRoutes);
+app.use('/profile',profileRoutes,express.static(path.join(__dirname, '../user-page/user_homepage')));
+
 
 app.listen(3000, function() {
     console.log("Connected to server, port 3000")
