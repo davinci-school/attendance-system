@@ -30,7 +30,7 @@ passport.use(
         .then(result => {
             if (result.length > 0) { // SQL query return a match
                 // user found store user to cookies
-                console.log(result[0])
+                console.log('user found' + result)
                 done(null,result[0])
             } else {
                 // user not found - failureRedirect at /google/redirect/ back to login  

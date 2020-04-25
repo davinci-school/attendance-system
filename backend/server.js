@@ -21,9 +21,10 @@ app.use(cookieSession({
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use(express.urlencoded({ extended: true })) // used for passing date in API
 
 const authCheck = (req, res, next) => {
-    console.log('req.user '+ req.user)
+    console.log('authCheck - '+ req.user)
     if (!req.user){
        res.redirect('/auth/login') 
     } else {
