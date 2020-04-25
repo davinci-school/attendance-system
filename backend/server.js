@@ -22,7 +22,14 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-//app.use(express.urlencoded({ extended: true }))
+const authCheck = (req, res, next) => {
+    console.log('req.user '+ req.user)
+    if (!req.user){
+       res.redirect('/auth/login') 
+    } else {
+        next()
+    }
+}
 
 app.get('/', (req, res) => {
     res.redirect('/profile/')
@@ -30,9 +37,9 @@ app.get('/', (req, res) => {
 
 // set up Routes
 app.use('/auth',authRoutes);
-app.use('/api',apiRoutes);
-app.use('/profile',profileRoutes,express.static(path.join(__dirname, '../user-page/user_homepage')));
-app.use('/profile',profileRoutes,express.static(path.join(__dirname, '../admin-page')));
+app.use('/api',authCheck,apiRoutes);
+app.use('/profile',authCheck,profileRoutes,express.static(path.join(__dirname, '../user-page/user_homepage')));
+app.use('/profile',authCheck,profileRoutes,express.static(path.join(__dirname, '../admin-page')));
 
 app.listen(3000, function() {
     console.log("Connected to server, port 3000")

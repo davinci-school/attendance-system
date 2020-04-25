@@ -1,16 +1,7 @@
 const router = require('express').Router();
 const connection = require('../database/sql-db')
 
-const authCheck = (req, res, next) => {
-    console.log('req.user '+ req.user)
-    if (!req.user){
-       res.redirect('/auth/login') 
-    } else {
-        next()
-    }
-}
-
-router.get('/user_data_past_month', authCheck, (req, res) => {
+router.get('/user_data_past_month', (req, res) => {
     console.log("user_data_past_month")
     connection.query(`
         SELECT u.username, t.time_in, t.time_out 
