@@ -3,7 +3,6 @@ const passport = require('passport')
 
 // Main login page - can add other servises than Google+
 router.get('/login', (req, res)=>{
-    //res.render('login')
     res.sendFile('index.html', {root: '../frontend/login'})
 })
 // auth logout
