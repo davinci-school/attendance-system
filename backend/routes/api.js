@@ -66,12 +66,13 @@ router.post('/user_check_in', (req, res)=> {
 // POST: /user_check_out
 router.post('/user_check_out', (req, res)=> {
     console.log('api/user_check_out')
-    // Check if user already checked-in today and chekout is NULL then set check-out time
+    // Check if user already checked-in today longerr than 3 minutes 
+    // and chekout is NULL THEN set check-out time
     connection.query(`
         SELECT t.id_user, t.time_in 
         FROM time_board t 
         WHERE t.id_user = ? 
-        AND cast(time_in as DATE) = CURDATE()
+        AND time_in < (NOW() - INTERVAL 3 MINUTE)
         AND time_out IS NULL`,
         [req.user.id])
         .then(result => {
