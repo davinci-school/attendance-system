@@ -34,7 +34,6 @@ app.use('/api',apiRoutes);
 app.use('/profile',profileRoutes,express.static(path.join(__dirname, '../user-page/user_homepage')));
 app.use('/profile',profileRoutes,express.static(path.join(__dirname, '../admin-page')));
 
-
 app.listen(3000, function() {
     console.log("Connected to server, port 3000")
 });

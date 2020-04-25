@@ -1,0 +1,6 @@
+zprovoznit:
+
+    - tlacitko na skryti overlay
+    - pri stisku juction tlacitka spustit overlay a zavrit junction
+    - naprogramovat ruzne overlays
+    - zakomponovat do funkce predani user_name

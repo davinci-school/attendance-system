@@ -1,3 +1,60 @@
-body {
-    font-family: "Roboto", sans-serif;
-}
+ body {
+     font-family: "Roboto", sans-serif;
+ }
+ 
+ .statusWrap {
+     display: flex;
+     border: solid;
+     border-width: 1px;
+     margin-bottom: 10px;
+ }
+ 
+ .attendance {
+     display: flex;
+     flex-direction: column;
+ }
+ 
+ .userName {
+     width: 35%;
+ }
+ 
+ .userStatus,
+ .userName {
+     padding: 10px;
+ }
+ 
+ .userStatus {
+     border-width: 0.5px;
+     background-color: rgb(211, 211, 211);
+     border-style: solid;
+ }
+ 
+ body {
+     max-width: 500px;
+     min-width: 360px;
+ }
+ 
+ .popup2 {
+     position: absolute;
+     top: 10%;
+     left: 20px;
+     background-color: slategray;
+     padding: 10px;
+     border-width: 2px;
+     border-style: solid;
+     max-width: 500px;
+     min-width: 360px;
+ }
+ 
+ .timeSelector {
+     text-align: center;
+     display: inline-block;
+ }
+ 
+ .popupWrap,
+ .overlayJunction {
+     padding: 5px;
+     margin-bottom: 10px;
+     border: solid;
+     border-width: 1px;
+ }
