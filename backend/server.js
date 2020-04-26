@@ -1,181 +1,46 @@
 // Node.js + Express backend ...
-
 const Promise = require("promise");
 const express = require("express");
-const session = require("express-session")
+cookieSession = require('cookie-session')
 const app = express();
 const path = require('path');
 const https = require('https');
+const authRoutes = require('./routes/authorization')
+const profileRoutes = require('./routes/profile')
+const apiRoutes = require('./routes/api')
+const passportSetup = require('./config/passport-setup')
+const connection = require('./database/sql-db')
+const passport = require('passport')
+const keys = require('./config/keys')
 
-app.use(session({
-    name: "sid",
-    resave: false,
-    saveUninitialized: false,
-    secret: "admin1234",
-    cookie: { //create a cookie
-        maxAge: 750000000, //set cookie lifetime to 208.3 hours
-        sameSite: true,
-        secure: false,
-    }
+app.use(cookieSession({
+    maxAge: 24*60*60*1000,
+    keys: [keys.session.cookieKey]
 }));
-app.use(express.urlencoded({ extended: true }))
-app.use('/home', express.static(path.join(__dirname, '../user-page/user_homepage')))
 
-const mysql = require('mysql');
-const LOCALHOST = true;
+app.use(passport.initialize());
+app.use(passport.session());
 
-class Database {
-    constructor(config) {
-        this.connection = mysql.createConnection(config);
-    }
-    query(sql, args) {
-        return new Promise((resolve, reject) => {
-            this.connection.query(sql, args, (err, rows) => {
-                if (err)
-                    return reject(err);
-                resolve(rows);
-            });
-        });
-    }
-    close() {
-        return new Promise((resolve, reject) => {
-            this.connection.end(err => {
-                if (err)
-                    return reject(err);
-                resolve();
-            });
-        });
-    }
-}
+app.use(express.urlencoded({ extended: true })) // used for passing date in API
 
-
-if (LOCALHOST) {
-    //var connection = mysql.createConnection(
-    config = {
-        host: 'localhost',
-        user: 'root',
-        password: 'admin1234',
-        database: 'attendance_system',
-    }
-} else {
-    //var connection = mysql.createConnection(
-    config = {
-        host: '192.168.108.24',
-        user: 'remote_host',
-        password: 'admin1234',
-        database: 'attendance_system',
-    }
-}
-connection = new Database(config)
-
-// test connection and see all data in time_board
-connection.query('SELECT * from time_board')
-    .then(rows => console.log(rows))
-    .catch(err => console.log(err))
-
-// Redirect function
-const redirectLogin = (req, res, next) => {
-    if (!req.session.userid) {
-        res.redirect("/Login")
-    } else { next() }
-}
-
-const redirectHome = (req, res, next) => {
-    if (req.session.userid) {
-        res.redirect("/home")
-    } else { next() }
-}
-
-const convertSQL = (results) => {
-    return (JSON.parse(JSON.stringify(results[0])))
-}
-
-const checkUserExist = (results, req, res) => {
-    if (results.length > 0) { // SQL query return a match
-        var rows = convertSQL(results)
-        req.session.userid = rows.ID_users; // set session ID to user ID
-        res.redirect('/home');
+const authCheck = (req, res, next) => {
+    console.log('authCheck - '+ req.user)
+    if (!req.user){
+       res.redirect('/auth/login') 
     } else {
-        res.send('Incorrect Username and/or Password!');
-    }
-
-}
-
-const checkUserAuthorization = (results, req, res) => {
-    if (results.length > 0) {
-        var rows = convertSQL(results)
-        if (req.session.userid == rows.ID_users) {
-            console.log('user_ID', rows.ID_users);
-            res.send(rows.ID_users.toString());
-            return Promise.resolve(rows.ID_users.toString())
-        } else {
-            res.send('unathorizes access');
-            return Promise.reject('promise rejeted unathorizes access');
-        }
-    } else {
-        res.send('No such a user');
+        next()
     }
 }
-
 
 app.get('/', (req, res) => {
-    res.send(`
-    <h1>Hello world</h1>
-    <a href='/login'>login</a>
-    <a href='/home'>home </a>
-  `)
-})
-app.get('/home', redirectLogin, (req, res) => {
-    res.sendFile("index.html")
+    res.redirect('/profile/')
 })
 
-
-app.route("/Login")
-    .get(redirectHome, (req, res) => {
-        console.log(req.session)
-        res.send(`
-    <h1>Login page</h1>
-    <form method="post" action="/login">
-      <input type="email" name="email" placeholder="Email" require />
-      <input type="password" name="password" placeholder="Password" require />
-      <input type="submit"/>
-    </form>
-    `)
-    })
-
-.post(redirectHome, (req, res) => {
-        const { email, password } = req.body
-        console.log(email, password)
-        connection.query('SELECT * FROM users WHERE Email = ? AND password = ?', [email, password])
-            .then(results => checkUserExist(results, req, res))
-            .catch(err => console.log(err))
-    }) //end of post
-
-
-app.get('/users', (req, res) => {
-    const allUsernames = Object.keys(Database);
-    console.log('list of allUsernames is:', allUsernames);
-    res.send(allUsernames);
-});
-
-app.get('/user_data_past_month', redirectLogin, (req, res) => {
-
-    connection.query(`
-        SELECT u.username, t.time_in, t.time_out 
-        FROM users u 
-        JOIN time_board t 
-        ON u.ID_users = t.ID_users 
-        WHERE t.ID_users=?  
-        AND time_in BETWEEN SUBDATE(CURDATE(), INTERVAL 1 MONTH) AND NOW() 
-        ORDER BY t.time_in DESC`, [req.session.userid])
-        .then(results => {
-            res.send(results)
-            res.send(results.name, results.time_in, results.time_out)
-        })
-        .catch(error => console.log(error))
-
-});
-
+// set up Routes
+app.use('/auth',authRoutes);
+app.use('/api',authCheck,apiRoutes);
+app.use('/profile',authCheck,profileRoutes,express.static(path.join(__dirname, '../user-page/user_homepage')));
+app.use('/profile',authCheck,profileRoutes,express.static(path.join(__dirname, '../admin-page')));
 
 app.listen(3000, function() {
     console.log("Connected to server, port 3000")

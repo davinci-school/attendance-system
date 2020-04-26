@@ -101,21 +101,23 @@ function appendUser(data, divIdInput) {
     //buttons that trigger next popup to post attendance
     var text = "P - příchod"
     node = node = document.createElement("button");
+
     // console.log(divNumber + "Overlay");
 
     functionName = "junctionClick(" + divNumber + ")";
+
     node.setAttribute("onclick", functionName);
     node.innerHTML = text;
     newDivObject.appendChild(node);
 
     text = "O - odchod"
-    node = node = document.createElement("button");
+    node = document.createElement("button");
     node.setAttribute("onclick", functionName);
     node.innerHTML = text;
     newDivObject.appendChild(node);
 
     text = "N - absence"
-    node = node = document.createElement("button");
+    node = document.createElement("button");
     node.setAttribute("onclick", functionName);
     node.innerHTML = text;
     newDivObject.appendChild(node);
@@ -282,3 +284,4 @@ async function postUserCheckut(username, year, month, day, hour, minute, second)
 const selement = document.getElementById("hello")
 console.log(selement.classList.value);
 console.log(selement.classList.value.includes("invisible"));
+
