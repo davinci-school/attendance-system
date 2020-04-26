@@ -2,8 +2,12 @@
 // sessionStorage.clear();
 
 // fetch data from local JSON file, function returns data
-async function getAllHistoryLogs(date) {
-    const endpoint = "status.json";
+async function getAllHistoryLogs() {
+    date = new Date();
+    date = date.toISOString().substr(0, 19);
+
+    // const endpoint = "status.json";
+    const endpoint = "/api/admin_data/" + date.split("T")[0];
 
     // if there are no data at sessionStorage, use get request, 
     // else, use those stored data, to avoid unnecceseary load on server and processing time
@@ -15,7 +19,7 @@ async function getAllHistoryLogs(date) {
 
                 //store data to sessionStorage for later use
                 sessionStorage.setItem("dataFromJson", JSON.stringify(data));
-                console.log("Using GET request, no local data found.");
+                console.log("Using GET request, no local data found. Loading from: " + endpoint);
             },
             error: function(error) {
                 throw error;
@@ -26,7 +30,9 @@ async function getAllHistoryLogs(date) {
         let data = JSON.parse(sessionStorage.getItem("dataFromJson"));
         console.log("Using sessionStorage, no need for GET request.");
 
+        // console.log(data);
         return data;
+
     };
 };
 
@@ -43,7 +49,7 @@ function appendUser(data, divIdInput) {
     newDiv.className = "statusWrap";
     document.getElementById("attendance").appendChild(newDiv);
 
-    var name = data.user_name;
+    var name = data.username;
     var status = "";
 
     if (data.time_in && data.time_out) {
@@ -85,21 +91,19 @@ function appendUser(data, divIdInput) {
     newDiv = document.createElement("div");
     newDiv.id = divId + "Junction";
     newDivId = newDiv.id;
+
+    //set clas also to invisible
     newDiv.className = "overlayJunction invisible" //doplnit class
     document.getElementById("attendance").appendChild(newDiv);
 
     newDivObject = document.getElementById(newDivId);
     //save user name for later to check-in/out into dataset
-    newDivObject.dataset.userName = data.user_name;
-
-    //make it invisible by default
-    // newDivObject.style.display = "none"
-
+    newDivObject.dataset.userName = data.username;
 
     var togglePopupFunction = "togglePopup('" + divNumber + "Overlay')";
 
     //buttons that trigger next popup to post attendance
-    var text = "P - příchod"
+    var text = "P - přítomen"
     node = node = document.createElement("button");
 
     // console.log(divNumber + "Overlay");
@@ -128,11 +132,10 @@ function appendUser(data, divIdInput) {
     divId = divId + "Overlay";
     newDiv = document.createElement("div");
     newDiv.id = divId;
-    newDiv.className = "popupWrap";
-    document.getElementById("attendance").appendChild(newDiv);
 
-    //set display property pf pop-up to 'none'
-    document.getElementById(divId).style.display = "none"
+    //set clas also to invisible
+    newDiv.className = "popupWrap invisible";
+    document.getElementById("attendance").appendChild(newDiv);
 
     text = name + " - zapsat příchod"
     node = document.createElement("p");
@@ -179,7 +182,6 @@ getAllHistoryLogs()
         // console.log(data);
         appendUser(data[0], "div1");
         appendUser(data[1], "div2");
-        appendUser(data[2], "div3");
     });
 
 
@@ -187,23 +189,16 @@ getAllHistoryLogs()
 
 function togglePopup(elementId) {
 
-    let element = document.getElementById(elementId)
-    if (element.style.display === "none") {
-        element.style.display = "initial"
+    let element = document.getElementById(elementId);
+    // console.log(element.classList.value.includes("invisible"))
+
+    if (element.classList.value.includes("invisible") === true) {
+        element.classList.remove("invisible");
     } else {
-        element.style.display = "none"
+        element.classList.add("invisible");
     };
 }
 
-// function checkForOverlayAndToggle(elementId) {
-//     console.log("i work");
-//     var overlayId = elementId + "Overlay";
-//     if (overlayId.style.display === "initial") {
-//         togglePopup(overlayId);
-//     }
-// }
-
-//function to toggle Junction and Overlay
 
 function junctionClick(input) {
     // togglePopup(divNumber + "Overlay")
@@ -223,15 +218,11 @@ function divClick(elementId) {
 
     let element = document.getElementById(overlayId);
 
-    if (element.style.display === "initial") {
+    if (element.classList.value.includes("invisible") === false) {
         togglePopup(overlayId);
     }
     togglePopup(elementId + "Junction");
 }
-
-
-
-
 
 
 function pageRefresh() {
@@ -281,7 +272,7 @@ async function postUserCheckut(username, year, month, day, hour, minute, second)
 
 
 
-const selement = document.getElementById("hello")
-console.log(selement.classList.value);
-console.log(selement.classList.value.includes("invisible"));
-
+// const selement = document.getElementById("hello")
+// console.log(selement.classList.value);
+// console.log(selement.classList.value.includes("invisible"));
+// selement.classList.remove("invisible")

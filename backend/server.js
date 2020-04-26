@@ -14,7 +14,7 @@ const passport = require('passport')
 const keys = require('./config/keys')
 
 app.use(cookieSession({
-    maxAge: 24*60*60*1000,
+    maxAge: 24 * 60 * 60 * 1000,
     keys: [keys.session.cookieKey]
 }));
 
@@ -24,9 +24,9 @@ app.use(passport.session());
 app.use(express.urlencoded({ extended: true })) // used for passing date in API
 
 const authCheck = (req, res, next) => {
-    console.log('authCheck - '+ req.user)
-    if (!req.user){
-       res.redirect('/auth/login') 
+    console.log('authCheck - ' + req.user)
+    if (!req.user) {
+        res.redirect('/auth/login')
     } else {
         next()
     }
@@ -37,10 +37,10 @@ app.get('/', (req, res) => {
 })
 
 // set up Routes
-app.use('/auth',authRoutes);
-app.use('/api',authCheck,apiRoutes);
-app.use('/profile',authCheck,profileRoutes,express.static(path.join(__dirname, '../frontend/user')));
-app.use('/profile',authCheck,profileRoutes,express.static(path.join(__dirname, '../frontend/admin')));
+app.use('/auth', authRoutes);
+app.use('/api', authCheck, apiRoutes);
+// app.use('/profile',authCheck,profileRoutes,express.static(path.join(__dirname, '../frontend/user')));
+app.use('/profile', authCheck, profileRoutes, express.static(path.join(__dirname, '../frontend/admin')));
 
 app.listen(3000, function() {
     console.log("Connected to server, port 3000")
