@@ -2,10 +2,10 @@ const router = require('express').Router();
 
 router.get('/', (req, res)=>{
     if (req.user.ac_type=='user') {
-         res.sendFile('index.html', {root: './../user-page/user_homepage/'})
+         res.sendFile('index.html', {root: './../frontend/user/'})
     } else {
         console.log(req.user.ac_type)
-        res.sendFile('index.html', {root: './../admin-page/'})
+        res.sendFile('index.html', {root: './../frontend/admin/'})
     }
 })
 

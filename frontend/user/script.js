@@ -54,7 +54,8 @@ function appendHistoryLog(data, divId) {
 async function getHistoryLogs() {
 
     //this will change in future to /user_data_past_month
-    const endpoint = "historyLogsData.json";
+    //const endpoint = "historyLogsData.json";
+    const endpoint = "/api/user_data_past_month";
 
     // if there are no data at sessionStorage, use get request, 
     // else use those stored data, to avoid unnecceseary load on server and processing time
@@ -83,7 +84,7 @@ async function getHistoryLogs() {
 // function that posts attendance to database, check-in to be specific
 // this may change in the future as I dont have functional back-end avaliable
 async function checkIn() {
-    const ednpoint = "/user_check_in"
+    const endpoint = "/api/user_check_in"
 
     $.ajax({
         url: endpoint,
@@ -101,7 +102,7 @@ async function checkIn() {
 // function that posts attendance to database, check-out to be specific
 // this may change in the future as I dont have functional back-end avaliable
 async function checkOut() {
-    const endpoint = "/user_check_out"
+    const endpoint = "/api/user_check_out"
 
     $.ajax({
         url: endpoint,
@@ -118,7 +119,8 @@ async function checkOut() {
 
 getHistoryLogs()
     .then(function(data) {
-        for (let index = 0; index < 10; index++) {
-            appendHistoryLog(data[index], "session" + index);
+        for (i = 0; i < data.length; i++) { 
+            appendHistoryLog(data[i], "session" + i);
+
         }
-    });
+    }); 
