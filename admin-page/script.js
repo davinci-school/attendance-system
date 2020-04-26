@@ -31,12 +31,12 @@ async function getAllHistoryLogs(date) {
 };
 
 //apend user to page
-function appendUser(data, divId) {
-    // console.log(data);
+function appendUser(data, divIdInput) {
+
+    var divId = divIdInput
 
     var divNumber = divId
 
-    divId = divNumber
     let newDiv = document.createElement("div");
     newDiv.id = divId;
 
@@ -72,24 +72,28 @@ function appendUser(data, divId) {
 
 
     //create and set function for toggle, activated by button
-    var functionName = "togglePopup('" + divNumber + "Junction')"
-    node.setAttribute("onclick", functionName)
+    var toggleJunctionFunction = "togglePopup('" + divNumber + "Junction')";
+    var toggleOverlayIfNeeded = "checkForOverlayAndToggle('" + divNumber + "')";
+    var divClickFunction = "divClick('" + divNumber + "')";
+
+
+    node.setAttribute("onclick", divClickFunction);
 
     document.getElementById(divId).appendChild(node);
 
-    //----------------------------------------------------
-    //append pop-up JUNCTION
+    //-----  append JUNCTION  ------------------------------------------------
     newDiv = document.createElement("div");
     newDiv.id = divId + "Junction";
     newDivId = newDiv.id;
-    newDiv.className = "overlayJunction" //doplnit class
+    newDiv.className = "overlayJunction invisible" //doplnit class
     document.getElementById("attendance").appendChild(newDiv);
 
     newDivObject = document.getElementById(newDivId);
-    //save user name for late check-in/out
+    //save user name for later to check-in/out into dataset
     newDivObject.dataset.userName = data.user_name;
+
     //make it invisible by default
-    newDivObject.style.display = "none"
+    // newDivObject.style.display = "none"
 
 
     var togglePopupFunction = "togglePopup('" + divNumber + "Overlay')";
@@ -100,8 +104,7 @@ function appendUser(data, divId) {
 
     // console.log(divNumber + "Overlay");
 
-    functionName = "junctionButtonAction(" + divNumber + ")";
-    // console.log(functionName);
+    functionName = "junctionClick(" + divNumber + ")";
 
     node.setAttribute("onclick", functionName);
     node.innerHTML = text;
@@ -119,11 +122,9 @@ function appendUser(data, divId) {
     node.innerHTML = text;
     newDivObject.appendChild(node);
 
-    //create and set function for toggle, activated by button
+    //---- append OVERLAY P ------------------------------------------------
 
-
-    //----------------------------------------------------
-    //append pop-up for check-in    
+    //----  append OVERLAYS  --------------------------------------------------
     divId = divId + "Overlay";
     newDiv = document.createElement("div");
     newDiv.id = divId;
@@ -185,28 +186,53 @@ getAllHistoryLogs()
 
 
 function togglePopup(elementId) {
+
     let element = document.getElementById(elementId)
     if (element.style.display === "none") {
         element.style.display = "initial"
     } else {
         element.style.display = "none"
     };
-
-    // document.getElementById(elementId).style.display = "initial"
-
 }
 
+// function checkForOverlayAndToggle(elementId) {
+//     console.log("i work");
+//     var overlayId = elementId + "Overlay";
+//     if (overlayId.style.display === "initial") {
+//         togglePopup(overlayId);
+//     }
+// }
+
 //function to toggle Junction and Overlay
-function junctionButtonAction(input, ) {
+
+function junctionClick(input) {
     // togglePopup(divNumber + "Overlay")
-    console.log(typeof(input));
-
-    console.log(input.toString());
-
     togglePopup(input.id + "Overlay");
 
     togglePopup(input.id + "Junction")
 };
+
+function divClick(elementId) {
+    console.log(elementId);
+
+    togglePopup(elementId);
+}
+
+function divClick(elementId) {
+    var overlayId = elementId + "Overlay";
+
+    let element = document.getElementById(overlayId);
+
+    if (element.style.display === "initial") {
+        togglePopup(overlayId);
+    }
+    togglePopup(elementId + "Junction");
+}
+
+
+
+
+
 
 function pageRefresh() {
     window.location.reload()
@@ -250,7 +276,12 @@ async function postUserCheckut(username, year, month, day, hour, minute, second)
         }
     });
     return;
-
 }
 
+
+
+
+const selement = document.getElementById("hello")
+console.log(selement.classList.value);
+console.log(selement.classList.value.includes("invisible"));
 
