@@ -58,3 +58,7 @@
      border: solid;
      border-width: 1px;
  }
+ 
+ .invisible {
+     display: none;
+ }
