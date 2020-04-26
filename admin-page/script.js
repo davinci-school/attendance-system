@@ -97,21 +97,24 @@ function appendUser(data, divId) {
     //buttons that trigger next popup to post attendance
     var text = "P - příchod"
     node = node = document.createElement("button");
+
     // console.log(divNumber + "Overlay");
 
     functionName = "junctionButtonAction(" + divNumber + ")";
+    // console.log(functionName);
+
     node.setAttribute("onclick", functionName);
     node.innerHTML = text;
     newDivObject.appendChild(node);
 
     text = "O - odchod"
-    node = node = document.createElement("button");
+    node = document.createElement("button");
     node.setAttribute("onclick", functionName);
     node.innerHTML = text;
     newDivObject.appendChild(node);
 
     text = "N - absence"
-    node = node = document.createElement("button");
+    node = document.createElement("button");
     node.setAttribute("onclick", functionName);
     node.innerHTML = text;
     newDivObject.appendChild(node);
@@ -247,4 +250,7 @@ async function postUserCheckut(username, year, month, day, hour, minute, second)
         }
     });
     return;
+
 }
+
+
