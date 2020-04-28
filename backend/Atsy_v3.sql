@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS `time_board` (
   KEY `ID_user` (`id_user`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8102 DEFAULT CHARSET=latin2 COLLATE=latin2_czech_cs;
 
--- Exportování dat pro tabulku attendance_system.time_board: ~1 005 rows (přibližně)
+-- Exportování dat pro tabulku attendance_system.time_board: ~1 006 rows (přibližně)
 DELETE FROM `time_board`;
 /*!40000 ALTER TABLE `time_board` DISABLE KEYS */;
 INSERT INTO `time_board` (`ID_time_board`, `id_user`, `time_in`, `time_out`) VALUES
@@ -1104,7 +1104,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   KEY `ID_user_name` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin2 COLLATE=latin2_czech_cs;
 
--- Exportování dat pro tabulku attendance_system.users: ~4 rows (přibližně)
+-- Exportování dat pro tabulku attendance_system.users: ~5 rows (přibližně)
 DELETE FROM `users`;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 INSERT INTO `users` (`id`, `username`, `Email`, `ac_type`) VALUES
@@ -1112,7 +1112,8 @@ INSERT INTO `users` (`id`, `username`, `Email`, `ac_type`) VALUES
 	(2, 'Schicker Ondřej ', 'ondra.schicker@gmail.com', 'user'),
 	(3, 'Zajíc Filip ', 'filip.zajic007@gmail.com', 'user'),
 	(4, 'Nováková Jana ', 'jatrocorp@gmail.com', 'user'),
-	(5, 'TT', 'TT@gmail.com', 'user');
+	(5, 'TT', 'TT@gmail.com', 'user'),
+	(6, 'Filip Králík', 'filip.zajic007@skoladavinci.cz', 'admin');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
