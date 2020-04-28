@@ -1104,7 +1104,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   KEY `ID_user_name` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin2 COLLATE=latin2_czech_cs;
 
--- Exportování dat pro tabulku attendance_system.users: ~5 rows (přibližně)
+-- Exportování dat pro tabulku attendance_system.users: ~6 rows (přibližně)
 DELETE FROM `users`;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 INSERT INTO `users` (`id`, `username`, `Email`, `ac_type`) VALUES
@@ -1113,7 +1113,7 @@ INSERT INTO `users` (`id`, `username`, `Email`, `ac_type`) VALUES
 	(3, 'Zajíc Filip ', 'filip.zajic007@gmail.com', 'user'),
 	(4, 'Nováková Jana ', 'jatrocorp@gmail.com', 'user'),
 	(5, 'TT', 'TT@gmail.com', 'user'),
-	(6, 'Filip Králík', 'filip.zajic007@skoladavinci.cz', 'admin');
+	(6, 'Filip Králík', 'filip.zajic@skoladavinci.cz', 'admin');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
