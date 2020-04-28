@@ -1,10 +1,9 @@
 // Node.js + Express backend ...
-const Promise = require("promise");
+//const Promise = require("promise");
 const express = require("express");
-cookieSession = require('cookie-session')
+const cookieSession = require('cookie-session')
 const app = express();
 const path = require('path');
-const https = require('https');
 const authRoutes = require('./routes/authorization')
 const profileRoutes = require('./routes/profile')
 const apiRoutes = require('./routes/api')
@@ -12,6 +11,7 @@ const passportSetup = require('./config/passport-setup')
 const connection = require('./database/sql-db')
 const passport = require('passport')
 const keys = require('./config/keys')
+const https = require('https');
 
 app.use(cookieSession({
     maxAge: 24 * 60 * 60 * 1000,
