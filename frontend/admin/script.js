@@ -8,7 +8,7 @@ async function getAllHistoryLogs() {
 
     // const endpoint = "status.json";
     var endpoint = "/api/admin_data/" + date.split("T")[0];
-    endpoint = "/api/admin_data/2020-04-26"
+    // endpoint = "/api/admin_data/2020-04-26"
 
     // if there are no data at sessionStorage, use get request, 
     // else, use those stored data, to avoid unnecceseary load on server and processing time
@@ -40,6 +40,7 @@ async function getAllHistoryLogs() {
 //apend user to page
 function appendUser(data, divIdInput) {
 
+    const userID = data.id;
     const divId = divIdInput
 
     var divNumber = divId
@@ -155,13 +156,13 @@ function appendUser(data, divIdInput) {
 
     node = document.createElement("button");
     node.innerHTML = "Zrušit";
-    functionName = "overlayClick('" + userName + "','P'," + inputId + "," + overlayDivId + ",'cancel')";
+    functionName = "overlayClick('" + userID + "','" + userName + "','P'," + inputId + "," + overlayDivId + ",'cancel')";
     node.setAttribute("onclick", functionName)
     document.getElementById(overlayDivId).appendChild(node);
 
     node = document.createElement("button");
     node.innerHTML = "Potvrdit příchod";
-    functionName = "overlayClick('" + userName + "','P'," + inputId + "," + overlayDivId + ",'confirm')";
+    functionName = "overlayClick('" + userID + "','" + userName + "','P'," + inputId + "," + overlayDivId + ",'confirm')";
     node.setAttribute("onclick", functionName)
     document.getElementById(overlayDivId).appendChild(node);
 
@@ -199,14 +200,14 @@ function appendUser(data, divIdInput) {
     text = "Zrušit";
     node = document.createElement("button");
     node.innerHTML = text;
-    functionName = "overlayClick('" + userName + "','O'," + inputId + "," + overlayDivId + ",'cancel')";
+    functionName = "overlayClick('" + userID + "','" + userName + "','O'," + inputId + "," + overlayDivId + ",'cancel')";
     node.setAttribute("onclick", functionName)
     document.getElementById(overlayDivId).appendChild(node);
 
     text = "Potvrdit odchod";
     node = document.createElement("button");
     node.innerHTML = text;
-    functionName = "overlayClick('" + userName + "','O'," + inputId + "," + overlayDivId + ",'confirm')";
+    functionName = "overlayClick('" + userID + "','" + userName + "','O'," + inputId + "," + overlayDivId + ",'confirm')";
     node.setAttribute("onclick", functionName)
     document.getElementById(overlayDivId).appendChild(node);
 
@@ -235,14 +236,14 @@ function appendUser(data, divIdInput) {
     text = "Zrušit";
     node = document.createElement("button");
     node.innerHTML = text;
-    functionName = "overlayClick('" + userName + "','N'," + inputId + "," + overlayDivId + ",'cancel')";
+    functionName = "overlayClick('" + userID + "','" + userName + "','N'," + inputId + "," + overlayDivId + ",'cancel')";
     node.setAttribute("onclick", functionName)
     document.getElementById(overlayDivId).appendChild(node);
 
     text = "Potvrdit absenci";
     node = document.createElement("button");
     node.innerHTML = text;
-    functionName = "overlayClick('" + userName + "','N'," + inputId + "," + overlayDivId + ",'confirm')";
+    functionName = "overlayClick('" + userID + "','" + userID + "','" + userName + "','N'," + inputId + "," + overlayDivId + ",'confirm')";
     node.setAttribute("onclick", functionName)
     document.getElementById(overlayDivId).appendChild(node);
 
@@ -300,7 +301,7 @@ function junctionClick(input, actionType) {
 
 };
 
-function overlayClick(userName, actionType, inputId, overlayDivId, button) {
+function overlayClick(userID, userName, actionType, inputId, overlayDivId, button) {
     togglePopup(overlayDivId.id);
 
     var d = new Date();
@@ -318,23 +319,23 @@ function overlayClick(userName, actionType, inputId, overlayDivId, button) {
 
     if (button === "confirm") {
         if (actionType === "P") {
-            editTimeIn(userName, date, time);
+            editTimeIn(userID, date, time);
             console.log("Editing time_in of:", userName, "-", time);
         } else if (actionType === "O") {
-            editTimeOut(userName);
+            editTimeOut(userID);
             console.log("Editing tim_out of:", userName, "-", time);
         } else if (actionType === "N") {
-            editTimeErase(userName, date)
+            editTimeErase(userID, date)
             console.log("Erasing attendance -", userName);
 
         }
     }
 };
 //post user time_out that overwrites database data
-async function editTimeIn(username, date, time) {
+async function editTimeIn(userID, date, time) {
     const endpoint = "/admin_edit"
     dataToSend = {
-        "username": username,
+        "username": userID,
         "date": date,
         "time_in": time,
         "time_out": null
@@ -358,10 +359,10 @@ async function editTimeIn(username, date, time) {
 };
 
 //post user check-out time that overwrites database data
-async function editTimeOut(username, date, time) {
+async function editTimeOut(userID, date, time) {
     const endpoint = "/admin_edit"
     dataToSend = {
-        "username": username,
+        "username": userID,
         "date": date,
         "time_in": time,
         "time_out": null
@@ -385,10 +386,10 @@ async function editTimeOut(username, date, time) {
 };
 
 //erase user time_out and time_in from databse
-async function editTimeErase(username, date) {
+async function editTimeErase(userID, date) {
     const endpoint = "/admin_edit"
     dataToSend = {
-        "username": username,
+        "username": userID,
         "date": date,
         "time_in": null,
         "time_out": null
