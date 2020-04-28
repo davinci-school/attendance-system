@@ -243,7 +243,7 @@ function appendUser(data, divIdInput) {
     text = "Potvrdit absenci";
     node = document.createElement("button");
     node.innerHTML = text;
-    functionName = "overlayClick('" + userID + "','" + userID + "','" + userName + "','N'," + inputId + "," + overlayDivId + ",'confirm')";
+    functionName = "overlayClick('" + userID + "','" + userName + "','N'," + inputId + "," + overlayDivId + ",'confirm')";
     node.setAttribute("onclick", functionName)
     document.getElementById(overlayDivId).appendChild(node);
 
