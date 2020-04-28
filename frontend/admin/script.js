@@ -126,10 +126,10 @@ function appendUser(data, divIdInput) {
     var overlayDivId = divId + "OverlayP";
     newDiv = document.createElement("div");
     newDiv.id = overlayDivId;
-    newDiv.className = "popupWrap invisible";
+    newDiv.className = "modal popupWrap invisible";
     document.getElementById("attendance").appendChild(newDiv);
 
-    text = name + " - zapsat příchod"
+    text = userName + " - zapsat příchod"
     node = document.createElement("p");
     node.className = "userNameCheckIn";
     textNode = document.createTextNode(text);
@@ -170,11 +170,10 @@ function appendUser(data, divIdInput) {
     var overlayDivId = divId + "OverlayO";
     newDiv = document.createElement("div");
     newDiv.id = overlayDivId;
-
     newDiv.className = "popupWrap invisible";
     document.getElementById("attendance").appendChild(newDiv);
 
-    text = name + " - zapsat odchod"
+    text = userName + " - zapsat odchod"
     node = document.createElement("p");
     node.className = "userNameCheckIn";
     textNode = document.createTextNode(text);
@@ -219,7 +218,7 @@ function appendUser(data, divIdInput) {
     newDiv.className = "popupWrap invisible";
     document.getElementById("attendance").appendChild(newDiv);
 
-    text = name + " - zapsat absenci"
+    text = userName + " - zapsat absenci"
     node = document.createElement("p");
     node.className = "userNameCheckIn";
     textNode = document.createTextNode(text);
@@ -257,8 +256,6 @@ getAllHistoryLogs()
         appendUser(data[0], "div1");
         appendUser(data[1], "div2");
     });
-
-
 
 
 function togglePopup(elementId) {
