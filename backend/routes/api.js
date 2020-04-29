@@ -12,13 +12,12 @@ const adminCheck = (req, res, next) => {
 
 // GET: /username
 // recieve data in JSON
-// { id_user: ID} 
 router.get('/username', (req, res) => {
     connection.query(`
     SELECT u.username
     FROM users u
     WHERE u.id = ?
-    `,[req.body.id_user])
+    `,[req.user.id])
     .then(results => {
         res.send(results)    
     })
