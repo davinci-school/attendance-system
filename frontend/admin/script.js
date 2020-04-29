@@ -364,6 +364,7 @@ async function editTimeIn(userID, date, time) {
             throw error;
         }
     });
+    pageRefresh();
     return;
 };
 
@@ -391,6 +392,7 @@ async function editTimeOut(userID, date, time) {
             throw error;
         }
     });
+    pageRefresh();
     return;
 };
 
