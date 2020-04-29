@@ -1,6 +1,8 @@
 var dateElement = document.getElementById("dateOnPage");
 d = new Date();
-dateElement.innerHTML = d.getDate() + ". " + d.getMonth() + ". " + d.getFullYear();
+dateElement.innerHTML = "Dnes je " + d.getDate() + ". " + d.getMonth() + ". " + d.getFullYear();
+
+LoadUserNameToPage();
 
 //clear sessionStorage on every page laod
 sessionStorage.clear();
@@ -12,8 +14,6 @@ async function getAllHistoryLogs() {
 
     // const endpoint = "status.json";
     var endpoint = "/api/admin_data/" + date.split("T")[0];
-    console.log(endpoint);
-
     // endpoint = "/api/admin_data/2020-04-26"
 
     // if there are no data at sessionStorage, use get request, 
@@ -83,10 +83,6 @@ function appendUser(data, divIdInput) {
     node.id = divId + "button"
     node.className = "userStatus";
 
-
-    //create and set function for toggle, activated by button
-    var toggleJunctionFunction = "togglePopup('" + divNumber + "Junction')";
-    var toggleOverlayIfNeeded = "checkForOverlayAndToggle('" + divNumber + "')";
     var divClickFunction = "divClick('" + divNumber + "')";
     node.setAttribute("onclick", divClickFunction);
 
@@ -98,27 +94,23 @@ function appendUser(data, divIdInput) {
     newDiv.id = divId + "ModalJunction";
     var modalID = newDiv.id;
     newDiv.className = "invisible modal";
-    console.log(newDiv);
-
-    window.onclick = function(newDiv) {
-        console.log("I somewhat work");
-        if (event.target == newDiv) {
-            togglePopup(newDiv);
-            console.log("I work");
-        };
-    };
-    let functionName = "togglePopup('" + modalID + "')";
-    // newDiv.setAttribute("onclick", functionName);
     document.getElementById("attendance").appendChild(newDiv);
 
     //modal content
     newDiv = document.createElement("div");
     newDiv.id = divId + "Junction";
     newDivId = newDiv.id;
-    newDiv.className = "overlayJunction modal-content";
+    newDiv.className = "overlayJunction modal-content junction-container";
     document.getElementById(modalID).appendChild(newDiv);
 
     newDivObject = document.getElementById(newDivId);
+
+    var text = "&times;"
+    node = node = document.createElement("span");
+    node.className = "close"
+    node.setAttribute("onclick", divClickFunction);
+    node.innerHTML = text;
+    newDivObject.appendChild(node);
 
     //buttons that trigger next popup to post attendance
     functionNameP = "junctionClick(" + divNumber + ",'P')";
@@ -145,26 +137,33 @@ function appendUser(data, divIdInput) {
 
     //---- append OVERLAY P ------------------------------------------------
     newDiv = document.createElement("div");
-    newDiv.id = divId + "ModalP";
+    newDiv.id = divId + "ModalOverlayP";
     var modalID = newDiv.id;
-    newDiv.className = "invisible";
+    newDiv.className = "invisible modal";
     // console.log(modalID);
     document.getElementById("attendance").appendChild(newDiv);
 
     var overlayDivId = divId + "OverlayP";
     newDiv = document.createElement("div");
     newDiv.id = overlayDivId;
-    newDiv.className = "popupWrap invisible";
-    document.getElementById("attendance").appendChild(newDiv);
+    newDiv.className = "popupWrap modal-content";
+    document.getElementById(modalID).appendChild(newDiv);
+
+    var text = "&times;"
+    node = node = document.createElement("span");
+    node.className = "close";
+    node.setAttribute("onclick", "overlayClick('" + userID + "','" + userName + "','P'," + inputId + "," + modalID + ",'cancel')");
+    node.innerHTML = text;
+    newDiv.appendChild(node);
 
     text = userName + " - zapsat příchod"
-    node = document.createElement("p");
+    node = document.createElement("H4");
     node.className = "userNameCheckIn";
     textNode = document.createTextNode(text);
     node.appendChild(textNode);
     document.getElementById(overlayDivId).appendChild(node);
 
-    text = "Vyberte čas příchodu"
+    text = "Vyberte čas příchodu:"
     node = document.createElement("p");
     node.className = "userNameCheckIn";
     textNode = document.createTextNode(text);
@@ -183,32 +182,47 @@ function appendUser(data, divIdInput) {
 
     node = document.createElement("button");
     node.innerHTML = "Zrušit";
-    functionName = "overlayClick('" + userID + "','" + userName + "','P'," + inputId + "," + overlayDivId + ",'cancel')";
+    // console.log(modalID);
+    functionName = "overlayClick('" + userID + "','" + userName + "','P'," + inputId + "," + modalID + ",'cancel')";
     node.setAttribute("onclick", functionName);
     document.getElementById(overlayDivId).appendChild(node);
 
     node = document.createElement("button");
     node.innerHTML = "Potvrdit příchod";
-    functionName = "overlayClick('" + userID + "','" + userName + "','P'," + inputId + "," + overlayDivId + ",'confirm')";
+    functionName = "overlayClick('" + userID + "','" + userName + "','P'," + inputId + "," + modalID + ",'confirm')";
     node.setAttribute("onclick", functionName);
     document.getElementById(overlayDivId).appendChild(node);
 
 
     //---- append OVERLAY O ------------------------------------------------
+    newDiv = document.createElement("div");
+    newDiv.id = divId + "ModalOverlayO";
+    var modalID = newDiv.id;
+    newDiv.className = "invisible modal";
+    // console.log(modalID);
+    document.getElementById("attendance").appendChild(newDiv);
+
     var overlayDivId = divId + "OverlayO";
     newDiv = document.createElement("div");
     newDiv.id = overlayDivId;
-    newDiv.className = "popupWrap invisible";
-    document.getElementById("attendance").appendChild(newDiv);
+    newDiv.className = "popupWrap modal-content";
+    document.getElementById(modalID).appendChild(newDiv);
+
+    var text = "&times;"
+    node = node = document.createElement("span");
+    node.className = "close";
+    node.setAttribute("onclick", "overlayClick('" + userID + "','" + userName + "','P'," + inputId + "," + modalID + ",'cancel')");
+    node.innerHTML = text;
+    newDiv.appendChild(node);
 
     text = userName + " - zapsat odchod"
-    node = document.createElement("p");
+    node = document.createElement("H4");
     node.className = "userNameCheckIn";
     textNode = document.createTextNode(text);
     node.appendChild(textNode);
     document.getElementById(overlayDivId).appendChild(node);
 
-    text = "Vyberte čas odchodu"
+    text = "Vyberte čas odchodu:"
     node = document.createElement("p");
     node.className = "userNameCheckOut";
     textNode = document.createTextNode(text);
@@ -227,27 +241,41 @@ function appendUser(data, divIdInput) {
     text = "Zrušit";
     node = document.createElement("button");
     node.innerHTML = text;
-    functionName = "overlayClick('" + userID + "','" + userName + "','O'," + inputId + "," + overlayDivId + ",'cancel')";
+    functionName = "overlayClick('" + userID + "','" + userName + "','O'," + inputId + "," + modalID + ",'cancel')";
     node.setAttribute("onclick", functionName);
     document.getElementById(overlayDivId).appendChild(node);
 
     text = "Potvrdit odchod";
     node = document.createElement("button");
     node.innerHTML = text;
-    functionName = "overlayClick('" + userID + "','" + userName + "','O'," + inputId + "," + overlayDivId + ",'confirm')";
+    functionName = "overlayClick('" + userID + "','" + userName + "','O'," + inputId + "," + modalID + ",'confirm')";
     node.setAttribute("onclick", functionName);
     document.getElementById(overlayDivId).appendChild(node);
 
 
     //---- append OVERLAY N ------------------------------------------------
+    newDiv = document.createElement("div");
+    newDiv.id = divId + "ModalOverlayN";
+    var modalID = newDiv.id;
+    newDiv.className = "invisible modal";
+    // console.log(modalID);
+    document.getElementById("attendance").appendChild(newDiv);
+
     var overlayDivId = divId + "OverlayN";
     newDiv = document.createElement("div");
     newDiv.id = overlayDivId;
-    newDiv.className = "popupWrap invisible";
-    document.getElementById("attendance").appendChild(newDiv);
+    newDiv.className = "popupWrap modal-content";
+    document.getElementById(modalID).appendChild(newDiv);
+
+    var text = "&times;"
+    node = node = document.createElement("span");
+    node.className = "close";
+    node.setAttribute("onclick", "overlayClick('" + userID + "','" + userName + "','P'," + inputId + "," + modalID + ",'cancel')");
+    node.innerHTML = text;
+    newDiv.appendChild(node);
 
     text = userName + " - zapsat absenci"
-    node = document.createElement("p");
+    node = document.createElement("H4");
     node.className = "userNameCheckIn";
     textNode = document.createTextNode(text);
     node.appendChild(textNode);
@@ -263,14 +291,14 @@ function appendUser(data, divIdInput) {
     text = "Zrušit";
     node = document.createElement("button");
     node.innerHTML = text;
-    functionName = "overlayClick('" + userID + "','" + userName + "','N'," + inputId + "," + overlayDivId + ",'cancel')";
+    functionName = "overlayClick('" + userID + "','" + userName + "','N'," + inputId + "," + modalID + ",'cancel')";
     node.setAttribute("onclick", functionName);
     document.getElementById(overlayDivId).appendChild(node);
 
     text = "Potvrdit absenci";
     node = document.createElement("button");
     node.innerHTML = text;
-    functionName = "overlayClick('" + userID + "','" + userName + "','N'," + inputId + "," + overlayDivId + ",'confirm')";
+    functionName = "overlayClick('" + userID + "','" + userName + "','N'," + inputId + "," + modalID + ",'confirm')";
     node.setAttribute("onclick", functionName);
     document.getElementById(overlayDivId).appendChild(node);
 
@@ -301,7 +329,7 @@ function togglePopup(elementId) {
 };
 
 function divClick(elementId) {
-    overlayIds = [elementId + "OverlayP", elementId + "OverlayO", elementId + "OverlayN"];
+    overlayIds = [elementId + "ModalOverlayP", elementId + "ModalOverlayO", elementId + "ModalOverlayN"];
 
     for (const overlayId of overlayIds) {
         let element = document.getElementById(overlayId);
@@ -314,16 +342,16 @@ function divClick(elementId) {
 
 function junctionClick(input, actionType) {
     if (actionType === "P") {
-        togglePopup(input.id + "OverlayP");
-        togglePopup(input.id + "Junction");
+        togglePopup(input.id + "ModalOverlayP");
         togglePopup(input.id + "ModalJunction");
         // console.log("togglePopup('" + input.id + "ModalJunction" + "')");
 
     } else if (actionType === "O") {
-        togglePopup(input.id + "OverlayO");
+        togglePopup(input.id + "ModalOverlayO");
+        console.log(input.id + "ModalOverlayO")
         togglePopup(input.id + "ModalJunction");
     } else if (actionType === "N") {
-        togglePopup(input.id + "OverlayN");
+        togglePopup(input.id + "ModalOverlayN");
         togglePopup(input.id + "ModalJunction");
     } else {
         console.loge("error in juctionClick: unsupported actionType");
@@ -447,4 +475,18 @@ function pageRefresh() {
     }, 500)
 
     sessionStorage.clear();
+};
+
+function LoadUserNameToPage() {
+    return $.ajax({
+        url: "/api/username",
+        type: "GET",
+        success: function(data) {
+            document.getElementById("AcountUserName").innerHTML = "Přihlášen jako admin, " + data[0].username;
+        },
+        error: function(error) {
+            throw error;
+        }
+
+    });
 };
