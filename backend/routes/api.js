@@ -2,9 +2,9 @@ const router = require('express').Router();
 const connection = require('../database/sql-db')
 
 const adminCheck = (req, res, next) => {
-    console.log('adminCheck - '+ req.user.ac_type)
-    if (req.user.ac_type !='admin') {
-       res.redirect('/auth/login') 
+    console.log('adminCheck - ' + req.user.ac_type)
+    if (req.user.ac_type != 'admin') {
+        res.redirect('/auth/login')
     } else {
         next()
     }
@@ -66,8 +66,8 @@ router.post('/user_check_in', (req, res) => {
         })
 })
 
- // POST: /user_check_out
-router.post('/user_check_out', (req, res)=> {
+// POST: /user_check_out
+router.post('/user_check_out', (req, res) => {
     console.log('api/user_check_out')
         // Check if user already checked-in today longerr than 3 minutes 
         // and chekout is NULL THEN set check-out time
@@ -76,8 +76,7 @@ router.post('/user_check_out', (req, res)=> {
         FROM time_board t 
         WHERE t.id_user = ? 
         AND time_in < (NOW() - INTERVAL 0.1 MINUTE)
-        AND time_out IS NULL`,
-        [req.user.id])
+        AND time_out IS NULL`, [req.user.id])
         .then(result => {
             if (result.length > 0) {
                 connection.query(`
@@ -96,11 +95,11 @@ router.post('/user_check_out', (req, res)=> {
 //GET: /admin_data/YYYY-MMM-DD
 /* Order the people with following rules 
 First people already present (time_is=Value, time_out=NULL)
-Second people that didnt sign in yet (time_is=NULL, time_out=NULL)
+Second people that didnt sign in yet (time_is=NULL, time_out=NULL) dont RETURN admin
 Third people who already left (time_is=Value, time_out=Value)
 */
-router.get('/admin_data/:date',adminCheck, (req, res) => {
-    console.log("api/admin_data/"+ req.params.date)
+router.get('/admin_data/:date', adminCheck, (req, res) => {
+    console.log("api/admin_data/" + req.params.date)
     connection.query(`
         SELECT s.username, s.time_in, s.time_out, s.id
             FROM (SELECT u.username, t.time_in, t.time_out, u.id
@@ -133,7 +132,7 @@ router.get('/admin_data/:date',adminCheck, (req, res) => {
         [req.params.date,req.params.date,req.params.date])
         .then(results => {
             res.send(results)
-            //res.send(results.name, results.time_in, results.time_out, results.id_user )
+                //res.send(results.name, results.time_in, results.time_out, results.id_user )
         })
         .catch(error => console.log(error))
 

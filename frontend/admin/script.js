@@ -1,3 +1,7 @@
+var dateElement = document.getElementById("dateOnPage");
+d = new Date();
+dateElement.innerHTML = d.getDate() + ". " + d.getMonth() + ". " + d.getFullYear();
+
 //clear sessionStorage on every page laod
 sessionStorage.clear();
 
@@ -8,6 +12,8 @@ async function getAllHistoryLogs() {
 
     // const endpoint = "status.json";
     var endpoint = "/api/admin_data/" + date.split("T")[0];
+    console.log(endpoint);
+
     // endpoint = "/api/admin_data/2020-04-26"
 
     // if there are no data at sessionStorage, use get request, 
@@ -254,8 +260,9 @@ function appendUser(data, divIdInput) {
 getAllHistoryLogs()
     .then(function(data) {
         // console.log(data);
-        appendUser(data[0], "div1");
-        appendUser(data[1], "div2");
+        for (i = 0; i < data.length; i++) {
+            appendUser(data[i], "div" + i)
+        };
     });
 
 
@@ -305,10 +312,12 @@ function overlayClick(userID, userName, actionType, inputId, overlayDivId, butto
     togglePopup(overlayDivId.id);
 
     var d = new Date();
-    var month = ("0" + d.getMonth()).slice(-2);
+    var month = parseInt(("0" + d.getMonth()).slice(-2)) + 1;
     var dayNumber = ("0" + d.getDate()).slice(-2);
     var date = d.getFullYear() + "-" + month + "-" + dayNumber;
     var time = inputId.value + ":00"
+
+    console.log(month);
 
     // console.log(time);
     // console.log(date);
@@ -322,7 +331,7 @@ function overlayClick(userID, userName, actionType, inputId, overlayDivId, butto
             editTimeIn(userID, date, time);
             console.log("Editing time_in of:", userName, "-", time);
         } else if (actionType === "O") {
-            editTimeOut(userID);
+            editTimeOut(userID, date, time);
             console.log("Editing tim_out of:", userName, "-", time);
         } else if (actionType === "N") {
             editTimeErase(userID, date)
@@ -333,14 +342,13 @@ function overlayClick(userID, userName, actionType, inputId, overlayDivId, butto
 };
 //post user time_out that overwrites database data
 async function editTimeIn(userID, date, time) {
-    const endpoint = "/admin_edit"
+    const endpoint = "/api/admin_edit"
     dataToSend = {
-        "username": userID,
+        "id_user": userID,
         "date": date,
         "time_in": time,
-        "time_out": null
     };
-    // console.log(typeof dataToSend);
+    console.log(dataToSend);
 
     // console.log(dataToSend);
 
@@ -350,24 +358,25 @@ async function editTimeIn(userID, date, time) {
         data: dataToSend,
         succes: function() {
             console.log("Databse request succesfull.");
+            pageRefresh();
         },
         error: function(error) {
             throw error;
         }
     });
+    pageRefresh();
     return;
 };
 
 //post user check-out time that overwrites database data
 async function editTimeOut(userID, date, time) {
-    const endpoint = "/admin_edit"
+    const endpoint = "/api/admin_edit"
     dataToSend = {
-        "username": userID,
+        "id_user": userID,
         "date": date,
-        "time_in": time,
-        "time_out": null
+        "time_out": time
     };
-    // console.log(typeof dataToSend);
+    console.log(dataToSend);
 
     // console.log(dataToSend);
 
@@ -377,22 +386,22 @@ async function editTimeOut(userID, date, time) {
         data: dataToSend,
         succes: function() {
             console.log("Databse request succesfull.");
+            pageRefresh();
         },
         error: function(error) {
             throw error;
         }
     });
+    pageRefresh();
     return;
 };
 
 //erase user time_out and time_in from databse
 async function editTimeErase(userID, date) {
-    const endpoint = "/admin_edit"
+    const endpoint = "/api/admin_edit"
     dataToSend = {
-        "username": userID,
+        "id_user": userID,
         "date": date,
-        "time_in": null,
-        "time_out": null
     };
 
     $.ajax({
@@ -406,10 +415,11 @@ async function editTimeErase(userID, date) {
             throw error;
         }
     });
+    pageRefresh();
     return;
 };
 
 function pageRefresh() {
-    window.location.reload()
+    window.location.reload();
     sessionStorage.clear();
 };
