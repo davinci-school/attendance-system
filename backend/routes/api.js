@@ -81,7 +81,7 @@ router.post('/user_check_out', (req, res) => {
 //GET: /admin_data/YYYY-MMM-DD
 /* Order the people with following rules 
 First people already present (time_is=Value, time_out=NULL)
-Second people that didnt sign in yet (time_is=NULL, time_out=NULL)
+Second people that didnt sign in yet (time_is=NULL, time_out=NULL) dont RETURN admin
 Third people who already left (time_is=Value, time_out=Value)
 */
 router.get('/admin_data/:date', adminCheck, (req, res) => {
@@ -99,7 +99,7 @@ router.get('/admin_data/:date', adminCheck, (req, res) => {
         SELECT s2.username, s2.time_in, s2.time_out, s2.id
             FROM (SELECT DISTINCT u2.username, null AS time_in, NULL AS time_out, u2.id
                     FROM users u2 
-                    WHERE u2.id 
+                    WHERE u2.ac_type = 'user' AND u2.id 
                     NOT IN (SELECT u1.id 
                                 FROM users u1 
                                 JOIN time_board t2 
@@ -136,9 +136,7 @@ recieve data in JSON
 3) deltet record if both time_in=time_out=Null
 */
 router.post('/admin_edit', (req, res) => {
-    console.log('Got body:', req.body.username);
-    if (req.body.time_in == 'null') { req.body.time_in = null };
-    if (req.body.time_out == 'null') { req.body.time_out = null };
+    console.log('Got body:', req.body);
     connection.query(`CALL Admin_update_time_board(?, ?, ?, ?)`, [req.body.id_user, req.body.date, req.body.time_in, req.body.time_out])
         .then(result => {
             console.log(result)
