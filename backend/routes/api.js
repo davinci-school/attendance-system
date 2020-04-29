@@ -2,9 +2,9 @@ const router = require('express').Router();
 const connection = require('../database/sql-db')
 
 const adminCheck = (req, res, next) => {
-    console.log('adminCheck - '+ req.user.ac_type)
-    if (req.user.ac_type !='admin') {
-       res.redirect('/auth/login') 
+    console.log('adminCheck - ' + req.user.ac_type)
+    if (req.user.ac_type != 'admin') {
+        res.redirect('/auth/login')
     } else {
         next()
     }
@@ -52,8 +52,8 @@ router.post('/user_check_in', (req, res) => {
         })
 })
 
- // POST: /user_check_out
-router.post('/user_check_out', (req, res)=> {
+// POST: /user_check_out
+router.post('/user_check_out', (req, res) => {
     console.log('api/user_check_out')
         // Check if user already checked-in today longerr than 3 minutes 
         // and chekout is NULL THEN set check-out time
@@ -62,8 +62,7 @@ router.post('/user_check_out', (req, res)=> {
         FROM time_board t 
         WHERE t.id_user = ? 
         AND time_in < (NOW() - INTERVAL 0.1 MINUTE)
-        AND time_out IS NULL`,
-        [req.user.id])
+        AND time_out IS NULL`, [req.user.id])
         .then(result => {
             if (result.length > 0) {
                 connection.query(`
@@ -85,8 +84,8 @@ First people already present (time_is=Value, time_out=NULL)
 Second people that didnt sign in yet (time_is=NULL, time_out=NULL)
 Third people who already left (time_is=Value, time_out=Value)
 */
-router.get('/admin_data/:date',adminCheck, (req, res) => {
-    console.log("api/admin_data/"+ req.params.date)
+router.get('/admin_data/:date', adminCheck, (req, res) => {
+    console.log("api/admin_data/" + req.params.date)
     connection.query(`
         SELECT s.username, s.time_in, s.time_out, s.id
             FROM (SELECT u.username, t.time_in, t.time_out, u.id
@@ -115,11 +114,10 @@ router.get('/admin_data/:date',adminCheck, (req, res) => {
                     ON u3.id = t3.id_user 
                     WHERE (CAST(t3.time_in as DATE) = ? 
                     AND t3.time_out IS not null) 
-                    ORDER BY u3.username LIMIT 200) s1`,
-        [req.params.date,req.params.date,req.params.date])
+                    ORDER BY u3.username LIMIT 200) s1`, [req.params.date, req.params.date, req.params.date])
         .then(results => {
             res.send(results)
-            //res.send(results.name, results.time_in, results.time_out, results.id_user )
+                //res.send(results.name, results.time_in, results.time_out, results.id_user )
         })
         .catch(error => console.log(error))
 
@@ -137,15 +135,16 @@ recieve data in JSON
 2) if record exist than update time_in and time_out
 3) deltet record if both time_in=time_out=Null
 */
-router.post('/admin_edit', (req, res)=> {
+router.post('/admin_edit', (req, res) => {
     console.log('Got body:', req.body.username);
-    connection.query(`CALL Admin_update_time_board(?, ?, ?, ?)`,
-    [req.body.id_user, req.body.date, req.body.time_in, req.body.time_out])
-    .then(result => {
-        console.log(result)
-        res.sendStatus(200);
-    })
-    .catch(error => res.sendStatus(403))  
+    if (req.body.time_in == 'null') { req.body.time_in = null };
+    if (req.body.time_out == 'null') { req.body.time_out = null };
+    connection.query(`CALL Admin_update_time_board(?, ?, ?, ?)`, [req.body.id_user, req.body.date, req.body.time_in, req.body.time_out])
+        .then(result => {
+            console.log(result)
+            res.sendStatus(200);
+        })
+        .catch(error => res.sendStatus(403))
 })
 
 module.exports = router;
