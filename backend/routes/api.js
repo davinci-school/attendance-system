@@ -10,6 +10,20 @@ const adminCheck = (req, res, next) => {
     }
 }
 
+// GET: /username
+// recieve data in JSON
+// { id_user: ID} 
+router.get('/username', (req, res) => {
+    connection.query(`
+    SELECT u.username
+    FROM users u
+    WHERE u.id = ?
+    `,[req.body.id_user])
+    .then(results => {
+        res.send(results)    
+    })
+});
+
 // GET: /user_data_past_month
 router.get('/user_data_past_month', (req, res) => {
     console.log("api/user_data_past_month")
@@ -95,18 +109,18 @@ router.get('/admin_data/:date',adminCheck, (req, res) => {
                     ON u.id = t.id_user 
                     WHERE (CAST(t.time_in as DATE) = ? 
                     AND t.time_out IS null) 
-                    ORDER BY u.username LIMIT 200) s
+            ORDER BY u.username LIMIT 200) s
         UNION
         SELECT s2.username, s2.time_in, s2.time_out, s2.id
             FROM (SELECT DISTINCT u2.username, null AS time_in, NULL AS time_out, u2.id
                     FROM users u2 
-                    WHERE u2.id 
-                    NOT IN (SELECT u1.id 
-                                FROM users u1 
-                                JOIN time_board t2 
-                                ON u1.id = t2.id_user 
-                                WHERE (CAST(t2.time_in as DATE) = ?)) 
-                                ORDER BY u2.username LIMIT 200) s2
+                    WHERE u2.ac_type='user' AND 
+                    u2.id NOT IN (SELECT u1.id 
+                                    FROM users u1 
+                                    JOIN time_board t2 
+                                    ON u1.id = t2.id_user 
+                                    WHERE (CAST(t2.time_in as DATE) = ?)) 
+                    ORDER BY u2.username LIMIT 200) s2
         UNION
         SELECT s1.username, s1.time_in, s1.time_out, s1.id
             FROM (SELECT u3.username, t3.time_in, t3.time_out, u3.id
@@ -115,7 +129,7 @@ router.get('/admin_data/:date',adminCheck, (req, res) => {
                     ON u3.id = t3.id_user 
                     WHERE (CAST(t3.time_in as DATE) = ? 
                     AND t3.time_out IS not null) 
-                    ORDER BY u3.username LIMIT 200) s1`,
+            ORDER BY u3.username LIMIT 200) s1`,
         [req.params.date,req.params.date,req.params.date])
         .then(results => {
             res.send(results)
@@ -128,16 +142,16 @@ router.get('/admin_data/:date',adminCheck, (req, res) => {
 // POST: /admin_edit
 /*
 recieve data in JSON
-{ username: Jmeno, 
+{ id_user: ID, 
   date: YYYY-MM-DD,
-  time_in: HH:MM:SS,
-  time_out: NULL
+  time_in: HH:MM:SS or NULL,
+  time_out: HH:MM:SS or NULL
 }
 1) record may not have been created yet
 2) if record exist than update time_in and time_out
 3) deltet record if both time_in=time_out=Null
 */
-router.post('/admin_edit', (req, res)=> {
+router.post('/admin_edit', adminCheck, (req, res)=> {
     console.log('Got body:', req.body.username);
     connection.query(`CALL Admin_update_time_board(?, ?, ?, ?)`,
     [req.body.id_user, req.body.date, req.body.time_in, req.body.time_out])
