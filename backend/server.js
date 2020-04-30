@@ -39,8 +39,8 @@ app.get('/', (req, res) => {
 // set up Routes
 app.use('/auth', authRoutes);
 app.use('/api', authCheck, apiRoutes);
-// app.use('/profile',authCheck,profileRoutes,express.static(path.join(__dirname, '../frontend/user')));
-app.use('/profile', authCheck, profileRoutes, express.static(path.join(__dirname, '../frontend/admin')));
+// app.use('/profile', authCheck, profileRoutes, express.static(path.join(__dirname, '../frontend/user')));
+app.use('/profile', authCheck, profileRoutes, express.static(path.join(__dirname, '../frontend/home')));
 
 app.listen(3000, function() {
     console.log("Connected to server, port 3000")
