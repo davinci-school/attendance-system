@@ -231,8 +231,9 @@ function appendUser(data, divIdInput) {
 
     var d = new Date()
     node = document.createElement("input");
-    node.type = "time";
+    var inputId = overlayDivId + "Input";
     node.id = overlayDivId + "Input";
+    node.type = "time";
     var h = ("0" + d.getHours()).slice(-2);
     var m = ("0" + d.getMinutes()).slice(-2);
     node.value = h + ":" + m;
@@ -366,9 +367,12 @@ function overlayClick(userID, userName, actionType, inputId, overlayDivId, butto
     var month = parseInt(("0" + d.getMonth()).slice(-2)) + 1;
     var dayNumber = ("0" + d.getDate()).slice(-2);
     var date = d.getFullYear() + "-" + month + "-" + dayNumber;
-    var time = inputId.value + ":00";
+    var time = 0;
+    time = inputId.value + ":00";
 
     // console.log(time);
+    // console.log(inputId.value);
+
     // console.log(date);
 
     // console.log(userName);
@@ -397,7 +401,7 @@ async function editTimeIn(userID, date, time) {
         "date": date,
         "time_in": time,
     };
-    console.log(dataToSend);
+    // console.log(dataToSend);
 
     // console.log(dataToSend);
 
@@ -425,9 +429,6 @@ async function editTimeOut(userID, date, time) {
         "date": date,
         "time_out": time
     };
-    console.log(dataToSend);
-
-    // console.log(dataToSend);
 
     $.ajax({
         url: endpoint,
@@ -472,7 +473,7 @@ async function editTimeErase(userID, date) {
 function pageRefresh() {
     setTimeout(function() {
         window.location.reload();
-    }, 500)
+    }, 50000)
 
     sessionStorage.clear();
 };
