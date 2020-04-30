@@ -473,7 +473,7 @@ async function editTimeErase(userID, date) {
 function pageRefresh() {
     setTimeout(function() {
         window.location.reload();
-    }, 50000)
+    }, 50)
 
     sessionStorage.clear();
 };
@@ -483,7 +483,7 @@ function LoadUserNameToPage() {
         url: "/api/username",
         type: "GET",
         success: function(data) {
-            document.getElementById("AcountUserName").innerHTML = "Přihlášen jako admin, " + data[0].username;
+            document.getElementById("AcountUserName").innerHTML = "Přihlášen jako učitel, " + data[0].username;
         },
         error: function(error) {
             throw error;

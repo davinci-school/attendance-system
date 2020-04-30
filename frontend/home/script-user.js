@@ -56,7 +56,7 @@ function appendHistoryLog(data, divId) {
     var historyLogList = [sessionDate, arrival, departure, duration];
 
     // loop through individual informations, append them in different rows
-    for (let index = 0; index < historyLogList.length; index++) {
+    for (let index = 0; index < historyLogList.length - 1; index++) {
         let text = historyLogList[index];
 
         let node = document.createElement("P");
