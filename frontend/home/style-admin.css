@@ -1,6 +1,8 @@
 body {
     font-family: "Roboto", sans-serif;
     margin: auto;
+    max-width: 500px;
+    min-width: 360px;
 }
 
 h1 {
@@ -47,11 +49,6 @@ h1 {
     border-width: 0.5px;
     background-color: rgb(211, 211, 211);
     border-style: solid;
-}
-
-body {
-    max-width: 500px;
-    min-width: 360px;
 }
 
 

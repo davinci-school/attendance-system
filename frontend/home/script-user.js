@@ -1,5 +1,5 @@
 LoadUserNameToPage();
-
+sessionStorage.clear();
 //get name of day based on date
 function getDayName(data) {
     dayOrder = data.getDay();
@@ -7,6 +7,28 @@ function getDayName(data) {
     dayName = dayList[dayOrder];
     return dayName;
 };
+
+function displayRightButton() {
+    let buttonIn = document.getElementById("checkIn")
+    let buttonOut = document.getElementById("checkOut")
+    console.log(sessionStorage.getItem("isIn"));
+
+
+    if (sessionStorage.getItem("isIn") == true) {
+        buttonIn.style.display = "none";
+        buttonOut.style.display = "initial";
+        console.log("uzivatel tu je");
+
+    } else if (sessionStorage.getItem("isIn") == false) {
+        buttonIn.style.display = "initial";
+        buttonOut.style.display = "none";
+    } else {
+        console.log("ty darebáku!");
+        // buttonIn.style.display = "none";
+        // buttonOut.style.display = "none";
+        document.getElementById("errorMessage").style.display = "initial"
+    }
+}
 
 //add History Log
 function appendHistoryLog(data, divId) {
@@ -55,6 +77,7 @@ function appendHistoryLog(data, divId) {
 //returns unformated data
 async function getHistoryLogs() {
 
+    sessionStorage.clear();
     //this will change in future to /user_data_past_month
     //const endpoint = "historyLogsData.json";
     const endpoint = "/api/user_data_past_month";
@@ -66,7 +89,6 @@ async function getHistoryLogs() {
             url: endpoint,
             type: "GET",
             success: function(data) {
-
                 //store data to sessionStorage for later use
                 sessionStorage.setItem("dataFromJson", JSON.stringify(data));
                 console.log("Using GET request, no local data found.");
@@ -93,6 +115,7 @@ async function checkIn() {
         type: "POST",
         success: function() {
             console.log("Check-in was succesfull.");
+            pageRefresh();
         },
         error: function(error) {
             console.log(error);
@@ -111,6 +134,7 @@ async function checkOut() {
         type: "POST",
         success: function() {
             console.log("Check-out was succesfull.");
+            pageRefresh();
         },
         error: function(error) {
             console.log(error);
@@ -133,13 +157,31 @@ function LoadUserNameToPage() {
     });
 };
 
+function pageRefresh() {
+    setTimeout(function() {
+        window.location.reload();
+    }, 500)
+
+    sessionStorage.clear();
+};
+
 // actual code, that runs
 // get data from file and save them to sessionStorage, then log it to console, then append data to HTML
 
 getHistoryLogs()
     .then(function(data) {
+        sessionStorage.setItem("isIn", false)
         for (i = 0; i < data.length; i++) {
-            appendHistoryLog(data[i], "session" + i);
-
-        }
+            //prevent appending unfinished log (on this day)
+            if (data[i].time_out != null) {
+                if (i == 0) {
+                    sessionStorage.setItem("isIn", "left")
+                }
+                appendHistoryLog(data[i], "session" + i);
+            } else if (data[i].time_out == null && i == 0) {
+                //save info, if user is in, but has not checked out
+                sessionStorage.setItem("isIn", true)
+            };
+        };
+        // displayRightButton();
     });
