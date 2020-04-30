@@ -1,18 +1,28 @@
 body {
     font-family: "Roboto", sans-serif;
     margin: auto;
-    min-width: 250px;
-    text-align: center;
+    max-width: 500px;
+    min-width: 360px;
 }
 
 .nav {
-    text-align: center;
+    /* text-align: center; */
 }
 
 .checkIn {
     margin-bottom: 20px;
     margin-top: 20px;
     text-align: center;
+}
+
+header {
+    text-align: left;
+}
+
+#errorMessage {}
+
+.checkIn>p {
+    margin-bottom: 20px;
 }
 
 .sessionDate {
