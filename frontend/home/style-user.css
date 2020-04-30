@@ -43,3 +43,17 @@ body {
     padding-left: 10px;
     margin: 10px;
 }
+
+.top-bar-container {
+    display: flex;
+    width: 100%;
+    border-bottom: 1px solid black;
+    justify-content: space-between;
+}
+
+.top-bar-content {
+    margin-right: 16px;
+    margin-left: 16px;
+    margin-top: 16px;
+    margin-bottom: 5px;
+}

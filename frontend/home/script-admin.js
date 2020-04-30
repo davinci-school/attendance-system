@@ -1,6 +1,6 @@
 var dateElement = document.getElementById("dateOnPage");
 d = new Date();
-dateElement.innerHTML = "Dnes je " + d.getDate() + ". " + d.getMonth() + ". " + d.getFullYear();
+dateElement.innerHTML = "Dnes je " + d.getDate() + ". " + parseInt(d.getMonth() + 1) + ". " + d.getFullYear();
 
 LoadUserNameToPage();
 

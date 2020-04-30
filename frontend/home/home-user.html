@@ -3,15 +3,19 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Attendace system</title>
-    <link rel="stylesheet" href="master.css">
+    <title>User - Attendace system</title>
+    <link rel="stylesheet" href="style-user.css">
     <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
     <script src="jquery-3.4.1.min.js"></script>
 </head>
 
 <body>
     <header>
-        <nav>
+        <nav role="navigation">
+            <div class="top-bar-container">
+                <p id="AcountUserName" class="top-bar-content">Admin username</p>
+                <a href="/auth/logout" class="top-bar-content">Odhlásit</a>
+            </div>
             <div class="nav">
                 <h1>Welcome to Attendace System!</h1>
                 <!-- <button id="menuButton">menu</button> -->
@@ -34,7 +38,7 @@
 
     </main>
 
-    <script type="text/javascript" src="script.js"></script>
+    <script type="text/javascript" src="script-user.js"></script>
 
 </body>
 

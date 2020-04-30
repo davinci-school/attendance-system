@@ -1,3 +1,5 @@
+LoadUserNameToPage();
+
 //get name of day based on date
 function getDayName(data) {
     dayOrder = data.getDay();
@@ -107,8 +109,25 @@ async function checkOut() {
     $.ajax({
         url: endpoint,
         type: "POST",
-        succes: function() {
-            console.log("Check-out was succesfull.")
+        success: function() {
+            console.log("Check-out was succesfull.");
+        },
+        error: function(error) {
+            console.log(error);
+        }
+
+    });
+};
+
+function LoadUserNameToPage() {
+    return $.ajax({
+        url: "/api/username",
+        type: "GET",
+        success: function(data) {
+            document.getElementById("AcountUserName").innerHTML = "Přihlášen jako žák, " + data[0].username;
+        },
+        error: function(error) {
+            throw error;
         }
 
     });
@@ -119,8 +138,8 @@ async function checkOut() {
 
 getHistoryLogs()
     .then(function(data) {
-        for (i = 0; i < data.length; i++) { 
+        for (i = 0; i < data.length; i++) {
             appendHistoryLog(data[i], "session" + i);
 
         }
-    }); 
+    });
