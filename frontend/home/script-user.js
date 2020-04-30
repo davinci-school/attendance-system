@@ -55,6 +55,7 @@ function appendHistoryLog(data, divId) {
 //returns unformated data
 async function getHistoryLogs() {
 
+    sessionStorage.clear();
     //this will change in future to /user_data_past_month
     //const endpoint = "historyLogsData.json";
     const endpoint = "/api/user_data_past_month";
@@ -66,7 +67,6 @@ async function getHistoryLogs() {
             url: endpoint,
             type: "GET",
             success: function(data) {
-
                 //store data to sessionStorage for later use
                 sessionStorage.setItem("dataFromJson", JSON.stringify(data));
                 console.log("Using GET request, no local data found.");
@@ -93,6 +93,7 @@ async function checkIn() {
         type: "POST",
         success: function() {
             console.log("Check-in was succesfull.");
+            pageRefresh();
         },
         error: function(error) {
             console.log(error);
@@ -111,6 +112,7 @@ async function checkOut() {
         type: "POST",
         success: function() {
             console.log("Check-out was succesfull.");
+            pageRefresh();
         },
         error: function(error) {
             console.log(error);
@@ -133,13 +135,25 @@ function LoadUserNameToPage() {
     });
 };
 
+function pageRefresh() {
+    setTimeout(function() {
+        window.location.reload();
+    }, 500)
+
+    sessionStorage.clear();
+};
+
 // actual code, that runs
 // get data from file and save them to sessionStorage, then log it to console, then append data to HTML
 
 getHistoryLogs()
     .then(function(data) {
         for (i = 0; i < data.length; i++) {
-            appendHistoryLog(data[i], "session" + i);
-
-        }
+            //prevent appending unfinished log (on this day)
+            if (data[i].time_out != null) {
+                appendHistoryLog(data[i], "session" + i);
+            } else {
+                console.log("hello")
+            };
+        };
     });
