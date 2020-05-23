@@ -1,17 +1,19 @@
-// Node.js + Express backend ...
-//const Promise = require("promise");
+// importing existing librarires
 const express = require("express");
 const cookieSession = require('cookie-session')
-const app = express();
 const path = require('path');
-const authRoutes = require('./routes/authorization')
+const https = require('https');
+// importing the server files
+const authRoutes = require('./routes/authentication')
 const profileRoutes = require('./routes/profile')
 const apiRoutes = require('./routes/api')
 const passportSetup = require('./config/passport-setup')
 const connection = require('./database/sql-db')
 const passport = require('passport')
 const keys = require('./config/keys')
-const https = require('https');
+
+// Creating and setting new  Express application
+const app = express();
 
 app.use(cookieSession({
     maxAge: 24 * 60 * 60 * 1000,
@@ -20,9 +22,9 @@ app.use(cookieSession({
 
 app.use(passport.initialize());
 app.use(passport.session());
-
 app.use(express.urlencoded({ extended: true })) // used for passing date in API
 
+// Check if user logged in based on existence of request.user
 const authCheck = (req, res, next) => {
     console.log('authCheck - ' + req.user)
     if (!req.user) {
@@ -32,15 +34,13 @@ const authCheck = (req, res, next) => {
     }
 }
 
+// set up Routes
 app.get('/', (req, res) => {
     res.redirect('/profile/')
 })
-
-// set up Routes
 app.use('/auth', authRoutes);
-app.use('/api', authCheck, apiRoutes);
-// app.use('/profile', authCheck, profileRoutes, express.static(path.join(__dirname, '../frontend/user')));
 app.use('/profile', authCheck, profileRoutes, express.static(path.join(__dirname, '../frontend/home')));
+app.use('/api', authCheck, apiRoutes);
 
 app.listen(3000, function() {
     console.log("Connected to server, port 3000")
