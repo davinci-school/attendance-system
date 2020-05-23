@@ -6,13 +6,13 @@ const connection = require('../database/sql-db')
 
 
 passport.serializeUser((user, done)=>{
-    console.log('user.id' + user.id)
-    done(null,user.id)
+    console.log('user.id' + user.id_user)
+    done(null,user.id_user)
 })
 
-passport.deserializeUser((id, done)=>{
+passport.deserializeUser((id_user, done)=>{
     // find user by id and return account type
-    connection.query('SELECT * FROM users WHERE id = ?', [id])
+    connection.query('SELECT * FROM users WHERE id_user = ?', [id_user])
         .then(result => {
             done(null,result[0])
         })
@@ -26,7 +26,7 @@ passport.use(
     clientSecret: keys.google.clientSecret
 }, (accessToken, refreshToken, profile, done)=> {
     // passport callabck function - check if user exist in database
-    connection.query('SELECT * FROM users WHERE Email = ?', [profile.emails[0].value])
+    connection.query('SELECT * FROM users WHERE email = ?', [profile.emails[0].value])
         .then(result => {
             if (result.length > 0) { // SQL query return a match
                 // user found store user to cookies

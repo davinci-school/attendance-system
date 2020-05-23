@@ -13,11 +13,12 @@ const adminCheck = (req, res, next) => {
 // GET: /username
 // recieve data in JSON
 router.get('/username', (req, res) => {
+    console.log("req.user.id" + req.user.id_user)
     connection.query(`
     SELECT u.username
     FROM users u
-    WHERE u.id = ?
-    `,[req.user.id])
+    WHERE u.id_user = ?
+    `,[req.user.id_user])
     .then(results => {
         res.send(results)    
     })
@@ -30,10 +31,10 @@ router.get('/user_data_past_month', (req, res) => {
         SELECT u.username, t.time_in, t.time_out 
         FROM users u 
         JOIN time_board t 
-        ON u.id = t.id_user 
+        ON u.id_user = t.id_user 
         WHERE t.id_user=?  
         AND time_in BETWEEN SUBDATE(CURDATE(), INTERVAL 1 MONTH) AND NOW() 
-        ORDER BY t.time_in DESC`, [req.user.id])
+        ORDER BY t.time_in DESC`, [req.user.id_user])
         .then(results => {
             res.send(results)
                 //res.send(results.name, results.time_in, results.time_out)
@@ -50,7 +51,7 @@ router.post('/user_check_in', (req, res) => {
         SELECT t.id_user, t.time_in 
         FROM time_board t 
         WHERE t.id_user = ? 
-        AND cast(time_in as DATE) = CURDATE()`, [req.user.id])
+        AND cast(time_in as DATE) = CURDATE()`, [req.user.id_user])
         .then(result => {
             if (result.length > 0) {
                 console.log('user already logged in' + result)
@@ -59,7 +60,7 @@ router.post('/user_check_in', (req, res) => {
                 connection.query(`
                 INSERT INTO time_board 
                 (id_user,time_in) 
-                VALUES (?, CURTIME())`, [req.user.id]).then(res.sendStatus(200))
+                VALUES (?, CURTIME())`, [req.user.id_user]).then(res.sendStatus(200))
                     // user has not checked-in, save record to database and send confirmation
             }
         })
@@ -75,14 +76,14 @@ router.post('/user_check_out', (req, res) => {
         FROM time_board t 
         WHERE t.id_user = ? 
         AND time_in < (NOW() - INTERVAL 0.1 MINUTE)
-        AND time_out IS NULL`, [req.user.id])
+        AND time_out IS NULL`, [req.user.id_user])
         .then(result => {
             if (result.length > 0) {
                 connection.query(`
                 UPDATE  time_board 
                 SET time_out = CURTIME()
                 WHERE id_user = ? 
-                AND  cast(time_in as DATE) = CURDATE()`, [req.user.id])
+                AND  cast(time_in as DATE) = CURDATE()`, [req.user.id_user])
                     .then(res.sendStatus(200))
             } else {
                 console.log('user not checked in yet')
@@ -100,31 +101,31 @@ Third people who already left (time_is=Value, time_out=Value)
 router.get('/admin_data/:date', adminCheck, (req, res) => {
     console.log("api/admin_data/" + req.params.date)
     connection.query(`
-        SELECT s.username, s.time_in, s.time_out, s.id
-            FROM (SELECT u.username, t.time_in, t.time_out, u.id
+        SELECT s.username, s.time_in, s.time_out, s.id_user
+            FROM (SELECT u.username, t.time_in, t.time_out, u.id_user
                     FROM users u 
                     JOIN time_board t 
-                    ON u.id = t.id_user 
+                    ON u.id_user = t.id_user 
                     WHERE (CAST(t.time_in as DATE) = ? 
                     AND t.time_out IS null) 
             ORDER BY u.username LIMIT 200) s
         UNION
-        SELECT s2.username, s2.time_in, s2.time_out, s2.id
-            FROM (SELECT DISTINCT u2.username, null AS time_in, NULL AS time_out, u2.id
+        SELECT s2.username, s2.time_in, s2.time_out, s2.id_user
+            FROM (SELECT DISTINCT u2.username, null AS time_in, NULL AS time_out, u2.id_user
                     FROM users u2 
                     WHERE u2.ac_type='user' AND 
-                    u2.id NOT IN (SELECT u1.id 
+                    u2.id_user NOT IN (SELECT u1.id_user 
                                     FROM users u1 
                                     JOIN time_board t2 
-                                    ON u1.id = t2.id_user 
+                                    ON u1.id_user = t2.id_user 
                                     WHERE (CAST(t2.time_in as DATE) = ?)) 
                     ORDER BY u2.username LIMIT 200) s2
         UNION
-        SELECT s1.username, s1.time_in, s1.time_out, s1.id
-            FROM (SELECT u3.username, t3.time_in, t3.time_out, u3.id
+        SELECT s1.username, s1.time_in, s1.time_out, s1.id_user
+            FROM (SELECT u3.username, t3.time_in, t3.time_out, u3.id_user
                     FROM users u3 
                     JOIN time_board t3 
-                    ON u3.id = t3.id_user 
+                    ON u3.id_user = t3.id_user 
                     WHERE (CAST(t3.time_in as DATE) = ? 
                     AND t3.time_out IS not null) 
             ORDER BY u3.username LIMIT 200) s1`,
